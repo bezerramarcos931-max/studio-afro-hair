@@ -24,7 +24,6 @@
     header { position:sticky; top:0; background:rgba(27,46,28,.96); border-bottom:1px solid var(--border); padding:12px 16px; display:flex; align-items:center; justify-content:space-between; }
     .h-left { display:flex; align-items:center; gap:10px; }
     .logo-sm { width:38px; height:38px; border-radius:50%; border:1.5px solid var(--gold); background:var(--brand); display:flex; align-items:center; justify-content:center; color:var(--gold); font-weight:800; font-size:13px; overflow:hidden; }
-    .logo-sm img { width:100%; height:100%; object-fit:cover; }
     .btn-out { padding:7px 12px; border-radius:10px; background:var(--deep); border:1px solid var(--border); color:var(--cream); font-size:12px; cursor:pointer; }
     main { flex:1; padding:16px; max-width:600px; width:100%; margin:0 auto 80px; display:flex; flex-direction:column; gap:14px; }
     .card { padding:16px; border-radius:18px; background:var(--card); border:1px solid var(--border); }
@@ -100,7 +99,7 @@
 
   <script type="module">
     import { initializeApp } from "https://gstatic.com";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://gstatic.com";
+    import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://gstatic.com";
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://gstatic.com";
 
     const firebaseConfig = {
@@ -128,35 +127,43 @@
 
     function showErr(m) { authError.textContent = m; authError.classList.remove("hidden"); }
 
+    getRedirectResult(auth).then(async (res) => {
+      if (res && res.user) {
+        const email = (res.user.email || "").toLowerCase();
+        if (ALLOWED.includes(email)) {
+          await addDoc(collection(db, "audit_logs"), { action: "LOGIN", userEmail: email, timestamp: serverTimestamp() }).catch(()=>{});
+        }
+      }
+    }).catch((e) => showErr("Erro: " + e.message));
+
     btnLogin.onclick = async () => {
       authError.classList.add("hidden");
-      btnLogin.textContent = "Conectando...";
+      btnLogin.textContent = "Abrindo Google...";
       try {
-        const res = await signInWithPopup(auth, provider);
-        const email = (res.user.email || "").toLowerCase();
-        if (!ALLOWED.includes(email)) {
-          await signOut(auth);
-          showErr("Acesso negado para: " + email);
-          btnLogin.textContent = "Entrar com Google";
-          return;
-        }
-        await addDoc(collection(db, "audit_logs"), { action: "LOGIN", userEmail: email, timestamp: serverTimestamp() }).catch(()=>{});
+        await signInWithRedirect(auth, provider);
       } catch (e) {
         btnLogin.textContent = "Entrar com Google";
-        if (e.code !== "auth/popup-closed-by-user") showErr("Erro: " + e.message);
+        showErr("Erro: " + e.message);
       }
     };
 
     btnLogout.onclick = async () => { await signOut(auth); location.reload(); };
 
     onAuthStateChanged(auth, async (user) => {
-      if (user && ALLOWED.includes((user.email || "").toLowerCase())) {
-        const nome = (user.displayName || user.email.split("@")[0]).split(" ")[0];
-        document.getElementById("user-greeting").textContent = "Olá, " + nome;
-        loginScreen.classList.add("hidden");
-        appShell.classList.remove("hidden");
+      if (user) {
+        const email = (user.email || "").toLowerCase();
+        if (ALLOWED.includes(email)) {
+          const nome = (user.displayName || email.split("@")[0]).split(" ")[0];
+          document.getElementById("user-greeting").textContent = "Olá, " + nome;
+          loginScreen.classList.add("hidden");
+          appShell.classList.remove("hidden");
+        } else {
+          await signOut(auth);
+          showErr("Acesso negado para: " + email);
+          loginScreen.classList.remove("hidden");
+          appShell.classList.add("hidden");
+        }
       } else {
-        if (user) await signOut(auth);
         loginScreen.classList.remove("hidden");
         appShell.classList.add("hidden");
       }
