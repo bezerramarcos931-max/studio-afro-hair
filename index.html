@@ -151,7 +151,7 @@
 
     onAuthStateChanged(auth, async (user) => {
       if (user && ALLOWED.includes((user.email || "").toLowerCase())) {
-        const nome = (user.displayName || user.email.split("@")).split(" ");
+        const nome = (user.displayName || user.email.split("@")[0]).split(" ")[0];
         document.getElementById("user-greeting").textContent = "Olá, " + nome;
         loginScreen.classList.add("hidden");
         appShell.classList.remove("hidden");
