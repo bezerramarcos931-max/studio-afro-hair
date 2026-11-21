@@ -13,18 +13,17 @@
     .center { flex:1; display:flex; align-items:center; justify-content:center; padding:24px; background:radial-gradient(circle at top,#264027 0%,#132114 75%); }
     .box { width:100%; max-width:380px; background:rgba(27,46,28,.95); border:1px solid var(--border); border-radius:28px; padding:34px 24px; text-align:center; box-shadow:0 24px 48px rgba(0,0,0,.55); }
     .logo { width:96px; height:96px; margin:0 auto 16px; border-radius:50%; border:2px solid var(--gold); background:var(--brand); display:flex; align-items:center; justify-content:center; font-size:30px; font-weight:800; color:var(--gold); letter-spacing:2px; overflow:hidden; }
-    .logo img { width:100%; height:100%; object-fit:cover; }
     .owner { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:4px; }
     h1 { font-size:23px; font-weight:800; color:#fff; letter-spacing:1.5px; text-transform:uppercase; }
     .slogan { font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:var(--cream); opacity:.85; margin-top:6px; }
     .line { width:110px; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:18px auto 24px; }
-    .err { background:rgba(220,38,38,.18); border:1px solid rgba(248,113,113,.4); color:#fecaca; font-size:13px; padding:12px; border-radius:12px; margin-bottom:16px; text-align:left; }
-    .btn-g { width:100%; padding:14px 16px; border-radius:14px; border:1px solid var(--gold); background:#fff; color:#132114; font-size:15px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:10px; cursor:pointer; }
+    .err { background:rgba(220,38,38,.22); border:1px solid rgba(248,113,113,.5); color:#fecaca; font-size:12px; padding:12px; border-radius:12px; margin-bottom:16px; text-align:left; word-break:break-word; }
+    .btn-g { width:100%; padding:15px 16px; border-radius:14px; border:1px solid var(--gold); background:#fff; color:#132114; font-size:15px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:10px; cursor:pointer; }
     .note { margin-top:20px; font-size:11px; color:var(--muted); }
     header { position:sticky; top:0; background:rgba(27,46,28,.96); border-bottom:1px solid var(--border); padding:12px 16px; display:flex; align-items:center; justify-content:space-between; }
     .h-left { display:flex; align-items:center; gap:10px; }
-    .logo-sm { width:38px; height:38px; border-radius:50%; border:1.5px solid var(--gold); background:var(--brand); display:flex; align-items:center; justify-content:center; color:var(--gold); font-weight:800; font-size:13px; overflow:hidden; }
-    .btn-out { padding:7px 12px; border-radius:10px; background:var(--deep); border:1px solid var(--border); color:var(--cream); font-size:12px; cursor:pointer; }
+    .logo-sm { width:38px; height:38px; border-radius:50%; border:1.5px solid var(--gold); background:var(--brand); display:flex; align-items:center; justify-content:center; color:var(--gold); font-weight:800; font-size:13px; }
+    .btn-out { padding:7px 12px; border-radius:10px; background:var(--deep); border:1px solid var(--border); color:var(--cream); font-size:12px; }
     main { flex:1; padding:16px; max-width:600px; width:100%; margin:0 auto 80px; display:flex; flex-direction:column; gap:14px; }
     .card { padding:16px; border-radius:18px; background:var(--card); border:1px solid var(--border); }
     .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
@@ -38,17 +37,14 @@
 
   <div id="login-screen" class="center">
     <div class="box">
-      <div class="logo">
-        <img src="logo.png" alt="SA" onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
-        <span style="display:none;">SA</span>
-      </div>
+      <div class="logo">SA</div>
       <div class="owner">Samantha Suliwan</div>
       <h1>Studio Afro Hair</h1>
       <p class="slogan">A beleza que conduz</p>
       <div class="line"></div>
       <div id="auth-error" class="err hidden"></div>
       <button id="btn-login" type="button" class="btn-g">Entrar com Google</button>
-      <p class="note">Acesso restrito exclusivamente aos administradores autorizados.</p>
+      <p id="sdk-status" class="note">Preparando conexão segura...</p>
     </div>
   </div>
 
@@ -99,7 +95,7 @@
 
   <script type="module">
     import { initializeApp } from "https://gstatic.com";
-    import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://gstatic.com";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://gstatic.com";
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://gstatic.com";
 
     const firebaseConfig = {
@@ -124,48 +120,45 @@
     const authError = document.getElementById("auth-error");
     const btnLogin = document.getElementById("btn-login");
     const btnLogout = document.getElementById("btn-logout");
+    const sdkStatus = document.getElementById("sdk-status");
 
+    sdkStatus.textContent = "Conexão pronta • Toque acima para entrar";
     function showErr(m) { authError.textContent = m; authError.classList.remove("hidden"); }
 
-    getRedirectResult(auth).then(async (res) => {
-      if (res && res.user) {
-        const email = (res.user.email || "").toLowerCase();
-        if (ALLOWED.includes(email)) {
-          await addDoc(collection(db, "audit_logs"), { action: "LOGIN", userEmail: email, timestamp: serverTimestamp() }).catch(()=>{});
-        }
-      }
-    }).catch((e) => showErr("Erro: " + e.message));
-
-    btnLogin.onclick = async () => {
+    btnLogin.addEventListener("click", () => {
       authError.classList.add("hidden");
-      btnLogin.textContent = "Abrindo Google...";
-      try {
-        await signInWithRedirect(auth, provider);
-      } catch (e) {
-        btnLogin.textContent = "Entrar com Google";
-        showErr("Erro: " + e.message);
-      }
-    };
+      btnLogin.textContent = "Abrindo janela Google...";
+      signInWithPopup(auth, provider)
+        .then(async (res) => {
+          const email = (res.user.email || "").toLowerCase();
+          if (!ALLOWED.includes(email)) {
+            await signOut(auth);
+            showErr("Acesso negado para: " + email);
+            btnLogin.textContent = "Entrar com Google";
+            return;
+          }
+          addDoc(collection(db, "audit_logs"), { action: "LOGIN", userEmail: email, timestamp: serverTimestamp() }).catch(()=>{});
+        })
+        .catch((e) => {
+          btnLogin.textContent = "Entrar com Google";
+          showErr("Aviso (" + (e.code || "erro") + "): " + e.message);
+        });
+    });
 
-    btnLogout.onclick = async () => { await signOut(auth); location.reload(); };
+    btnLogout.addEventListener("click", async () => { await signOut(auth); location.reload(); });
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         const email = (user.email || "").toLowerCase();
         if (ALLOWED.includes(email)) {
-          const nome = (user.displayName || email.split("@")[0]).split(" ")[0];
+          const nome = (user.displayName || email.split("@")).split(" ");
           document.getElementById("user-greeting").textContent = "Olá, " + nome;
           loginScreen.classList.add("hidden");
           appShell.classList.remove("hidden");
         } else {
           await signOut(auth);
           showErr("Acesso negado para: " + email);
-          loginScreen.classList.remove("hidden");
-          appShell.classList.add("hidden");
         }
-      } else {
-        loginScreen.classList.remove("hidden");
-        appShell.classList.add("hidden");
       }
     });
   </script>
