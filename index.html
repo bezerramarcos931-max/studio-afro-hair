@@ -110,7 +110,7 @@
 
     if (typeof firebase === "undefined") {
       sdkStatus.textContent = "Falha ao carregar biblioteca Google";
-      showErr("O navegador bloqueou o script do Firebase (gstatic.com). Verifique sua conexão ou extensão de bloqueio.");
+      showErr("O navegador bloqueou o script do Firebase.");
     } else {
       var firebaseConfig = {
         apiKey: "AIzaSyDf2WEzBmcp2DPiqE8LLB5V9XDUoXr1UlE",
@@ -169,3 +169,5 @@
             appShell.classList.remove("hidden");
           } else {
             auth.signOut();
+            showErr("Acesso negado para: " + email);
+          }
