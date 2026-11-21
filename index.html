@@ -1,37 +1,102 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#18181b" />
-  <title>Studio Afro Hair Samantha — Gestão</title>
-  <script src="https://tailwindcss.com"></script>
-  <link rel="preconnect" href="https://googleapis.com">
-  <link href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="theme-color" content="#1c301d" />
+  <title>Studio Afro Hair — Samantha Suliwan</title>
+  <link rel="icon" href="logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="logo.png" />
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+    :root {
+      --bg-deep: #132114;
+      --bg-brand: #264027;
+      --bg-card: #1b2e1c;
+      --border-gold: rgba(212, 163, 56, 0.35);
+      --gold: #d4a338;
+      --gold-light: #e8be5d;
+      --cream: #f5f5f0;
+      --muted: #a8b8a9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg-deep); color: var(--cream); min-height: 100vh; display: flex; flex-direction: column; }
+    .hidden { display: none !important; }
+    .center-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; background: radial-gradient(circle at top, #264027 0%, #132114 75%); }
+    
+    /* Login Card */
+    .card-login { width: 100%; max-width: 380px; background: rgba(27, 46, 28, 0.92); border: 1px solid var(--border-gold); border-radius: 28px; padding: 34px 24px; text-align: center; box-shadow: 0 24px 48px rgba(0,0,0,0.55); }
+    .brand-circle { width: 120px; height: 120px; margin: 0 auto 18px; border-radius: 50%; border: 2px solid var(--gold); background: var(--bg-brand); overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+    .brand-circle img { width: 100%; height: 100%; object-fit: cover; }
+    .brand-fallback { font-size: 32px; font-weight: 800; color: var(--gold); letter-spacing: 2px; }
+    
+    .sub-owner { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 4px; }
+    .title { font-size: 24px; font-weight: 800; color: #ffffff; letter-spacing: 1.5px; text-transform: uppercase; }
+    .slogan { font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--cream); opacity: 0.88; margin-top: 6px; }
+    .divider { width: 120px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 18px auto 24px; }
+    
+    .error-box { background: rgba(220, 38, 38, 0.16); border: 1px solid rgba(248, 113, 113, 0.4); color: #fecaca; font-size: 13px; padding: 12px; border-radius: 12px; margin-bottom: 18px; text-align: left; }
+    .btn-google { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--gold); background: #ffffff; color: #132114; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 12px; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,0.25); }
+    .btn-google:active { transform: scale(0.98); background: #f3f4f6; }
+    .foot-note { margin-top: 22px; font-size: 11px; color: var(--muted); }
+
+    /* App Shell */
+    header { position: sticky; top: 0; background: rgba(27, 46, 28, 0.96); border-bottom: 1px solid var(--border-gold); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; z-index: 20; }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .logo-sm { width: 42px; height: 42px; border-radius: 50%; border: 1.5px solid var(--gold); background: var(--bg-brand); overflow: hidden; display: flex; align-items: center; justify-content: center; color: var(--gold); font-weight: 800; font-size: 14px; }
+    .logo-sm img { width: 100%; height: 100%; object-fit: cover; }
+    .header-title { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
+    .header-sub { font-size: 12px; color: var(--gold-light); }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .avatar { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--gold); object-fit: cover; }
+    .btn-logout { padding: 7px 12px; border-radius: 10px; background: var(--bg-deep); border: 1px solid var(--border-gold); color: var(--cream); font-size: 12px; cursor: pointer; }
+
+    main.content { flex: 1; padding: 16px; max-width: 600px; width: 100%; margin: 0 auto 84px; display: flex; flex-direction: column; gap: 14px; }
+    .status-card { padding: 15px 16px; border-radius: 18px; background: rgba(38, 64, 39, 0.65); border: 1px solid var(--border-gold); display: flex; align-items: center; justify-content: space-between; }
+    .status-title { font-size: 13px; font-weight: 700; color: var(--gold-light); }
+    .status-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 8px #4ade80; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .kpi-card { padding: 16px; border-radius: 18px; background: var(--bg-card); border: 1px solid var(--border-gold); }
+    .kpi-label { font-size: 12px; color: var(--muted); }
+    .kpi-val { font-size: 20px; font-weight: 800; color: #fff; margin-top: 6px; }
+    .kpi-val.gold { color: var(--gold-light); }
+    .badge { display: inline-block; margin-top: 8px; font-size: 11px; padding: 3px 9px; border-radius: 99px; background: rgba(212, 163, 56, 0.15); color: var(--gold-light); border: 1px solid rgba(212, 163, 56, 0.25); }
+
+    .info-card { padding: 20px; border-radius: 18px; background: var(--bg-card); border: 1px solid var(--border-gold); text-align: center; }
+    .info-card h3 { font-size: 15px; color: var(--gold-light); margin-bottom: 6px; }
+    .info-card p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    nav.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #132114; border-top: 1px solid var(--border-gold); display: grid; grid-template-columns: repeat(5, 1fr); padding: 9px 4px; z-index: 20; }
+    .nav-btn { background: none; border: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px; cursor: pointer; }
+    .nav-btn.active { color: var(--gold-light); font-weight: 700; }
+    .nav-icon { font-size: 18px; }
+    .spinner { width: 38px; height: 38px; border: 4px solid rgba(212,163,56,0.25); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 14px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col selection:bg-amber-500 selection:text-zinc-950">
+<body>
 
-  <div id="loading-screen" class="fixed inset-0 z-50 bg-zinc-950 flex flex-col items-center justify-center">
-    <div class="w-10 h-10 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin mb-4"></div>
-    <p class="text-sm text-zinc-400">Verificando credenciais...</p>
+  <div id="loading-screen" class="center-screen">
+    <div class="spinner"></div>
+    <p style="font-size:14px; color:#a8b8a9;">Verificando credenciais...</p>
   </div>
 
-  <main id="login-screen" class="hidden flex-1 flex flex-col items-center justify-center p-6">
-    <div class="w-full max-w-sm bg-zinc-900/90 border border-zinc-800 rounded-3xl p-8 shadow-2xl text-center">
-      <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-zinc-950 font-bold text-2xl shadow-lg shadow-amber-500/20">
-        SA
+  <div id="login-screen" class="center-screen hidden">
+    <div class="card-login">
+      <div class="brand-circle">
+        <img src="logo.png" alt="Studio Afro Hair" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+        <span class="brand-fallback" style="display:none;">SA</span>
       </div>
-      <h1 class="text-xl font-bold text-white tracking-tight">Studio Afro Hair</h1>
-      <p class="text-amber-400 text-sm font-medium mb-6">Samantha • Gestão Interna</p>
+      <div class="sub-owner">Samantha Suliwan</div>
+      <h1 class="title">Studio Afro Hair</h1>
+      <p class="slogan">A beleza que conduz</p>
+      <div class="divider"></div>
 
-      <div id="auth-error" class="hidden mb-5 p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs text-left leading-relaxed"></div>
+      <div id="auth-error" class="error-box hidden"></div>
 
-      <button id="btn-login" type="button"
-        class="w-full py-3.5 px-4 rounded-xl bg-white hover:bg-zinc-100 active:scale-[0.99] text-zinc-900 font-semibold text-sm flex items-center justify-center gap-3 transition shadow-md">
-        <svg class="w-5 h-5" viewBox="0 0 24 24">
+      <button id="btn-login" type="button" class="btn-google">
+        <svg width="20" height="20" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
           <path fill="#34A853" d="M12 24c3.3 0 6.08-1.09 8.1-2.96l-3.88-3.05c-1.1.74-2.51 1.18-4.22 1.18-3.24 0-5.99-2.19-6.97-5.13H1.02v3.14C3.05 21.2 7.24 24 12 24Z"/>
           <path fill="#FBBC05" d="M5.03 14.04c-.25-.74-.39-1.54-.39-2.36 0-.82.14-1.62.39-2.36V6.18H1.02C.37 7.47 0 8.93 0 10.48s.37 3.01 1.02 4.3l4.01-3.14Z"/>
@@ -40,156 +105,54 @@
         Entrar com Google
       </button>
 
-      <p class="mt-6 text-[11px] text-zinc-500">
-        Acesso restrito exclusivamente aos administradores autorizados.
-      </p>
+      <p class="foot-note">Acesso restrito exclusivamente aos administradores autorizados.</p>
     </div>
-  </main>
+  </div>
 
-  <div id="app-shell" class="hidden flex-1 flex flex-col pb-20">
-    <header class="sticky top-0 z-30 bg-zinc-950/90 backdrop-blur-md border-b border-zinc-800/80 px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-zinc-950 font-bold text-sm">
-          SA
+  <div id="app-shell" class="hidden">
+    <header>
+      <div class="header-left">
+        <div class="logo-sm">
+          <img src="logo.png" alt="SA" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+          <span style="display:none;">SA</span>
         </div>
         <div>
-          <h2 class="text-sm font-bold text-white leading-tight">Studio Afro Hair</h2>
-          <p id="user-greeting" class="text-[11px] text-zinc-400">Carregando...</p>
+          <div class="header-title">Studio Afro Hair</div>
+          <div id="user-greeting" class="header-sub">Carregando...</div>
         </div>
       </div>
-
-      <div class="flex items-center gap-2">
-        <img id="user-avatar" src="" alt="Admin" class="w-8 h-8 rounded-full border border-amber-500/50 object-cover hidden" />
-        <button id="btn-logout" title="Sair"
-          class="px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs text-zinc-300 transition">
-          Sair
-        </button>
+      <div class="header-right">
+        <img id="user-avatar" src="" alt="Admin" class="avatar hidden" />
+        <button id="btn-logout" class="btn-logout">Sair</button>
       </div>
     </header>
 
-    <main id="main-content" class="flex-1 p-4 max-w-3xl w-full mx-auto space-y-4">
-      <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-between">
+    <main class="content">
+      <div class="status-card">
         <div>
-          <p class="text-xs font-semibold text-emerald-400">Sistema Conectado e Protegido</p>
-          <p class="text-[11px] text-zinc-400 mt-0.5">Firestore + Regras de Administrador ativas</p>
+          <div class="status-title">Sistema Conectado e Protegido</div>
+          <div class="status-sub">Samantha Suliwan • Firestore Ativo</div>
         </div>
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <div class="dot"></div>
       </div>
 
-      <div class="grid grid-cols-2 gap-3">
-        <div class="p-4 rounded-2xl bg-zinc-900 border border-zinc-800">
-          <p class="text-xs text-zinc-400">Caixa Hoje</p>
-          <p class="text-lg font-bold text-white mt-1">R$ 0,00</p>
-          <span class="inline-block mt-2 text-[10px] px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400">Fechado</span>
+      <div class="grid-2">
+        <div class="kpi-card">
+          <div class="kpi-label">Caixa Hoje</div>
+          <div class="kpi-val">R$ 0,00</div>
+          <span class="badge">Fechado</span>
         </div>
-        <div class="p-4 rounded-2xl bg-zinc-900 border border-zinc-800">
-          <p class="text-xs text-zinc-400">Agenda Hoje</p>
-          <p class="text-lg font-bold text-amber-400 mt-1">0 clientes</p>
-          <span class="inline-block mt-2 text-[10px] px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400">Módulo 2</span>
+        <div class="kpi-card">
+          <div class="kpi-label">Agenda Hoje</div>
+          <div class="kpi-val gold">0 clientes</div>
+          <span class="badge">Módulo 2</span>
         </div>
       </div>
 
-      <div class="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 text-center space-y-2">
-        <p class="text-sm font-semibold text-zinc-200">Base do Aplicativo Pronta!</p>
-        <p class="text-xs text-zinc-400 leading-relaxed">
-          Autenticação exclusiva validada. Próxima etapa: construir o <strong>Módulo de Caixa e Transações</strong> ou <strong>Catálogo de Serviços e Clientes</strong>.
-        </p>
+      <div class="info-card">
+        <h3>Identidade Oficial Aplicada!</h3>
+        <p>Autenticação exclusiva validada. Próxima etapa: construir o <strong>Módulo de Caixa e Transações</strong> ou <strong>Catálogo de Serviços e Clientes</strong>.</p>
       </div>
     </main>
 
-    <nav class="fixed bottom-0 inset-x-0 z-30 bg-zinc-950/95 backdrop-blur-md border-t border-zinc-800/90 px-2 py-2">
-      <div class="max-w-3xl mx-auto grid grid-cols-5 gap-1 text-center">
-        <button data-tab="inicio" class="nav-btn flex flex-col items-center py-1 text-amber-400">
-          <span class="text-base">🏠</span>
-          <span class="text-[10px] font-medium mt-0.5">Início</span>
-        </button>
-        <button data-tab="agenda" class="nav-btn flex flex-col items-center py-1 text-zinc-500 hover:text-zinc-300">
-          <span class="text-base">📅</span>
-          <span class="text-[10px] font-medium mt-0.5">Agenda</span>
-        </button>
-        <button data-tab="caixa" class="nav-btn flex flex-col items-center py-1 text-zinc-500 hover:text-zinc-300">
-          <span class="text-base">💰</span>
-          <span class="text-[10px] font-medium mt-0.5">Caixa</span>
-        </button>
-        <button data-tab="clientes" class="nav-btn flex flex-col items-center py-1 text-zinc-500 hover:text-zinc-300">
-          <span class="text-base">💇🏾‍♀️</span>
-          <span class="text-[10px] font-medium mt-0.5">Clientes</span>
-        </button>
-        <button data-tab="mais" class="nav-btn flex flex-col items-center py-1 text-zinc-500 hover:text-zinc-300">
-          <span class="text-base">⚙️</span>
-          <span class="text-[10px] font-medium mt-0.5">Mais</span>
-        </button>
-      </div>
-    </nav>
-  </div>
-
-  <script type="module">
-    import { initializeApp } from "https://gstatic.com";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://gstatic.com";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://gstatic.com";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDf2WEzBmcp2DPiqE8LLB5V9XDUoXr1UlE",
-      authDomain: "://firebaseapp.com",
-      projectId: "studio-afro-hair",
-      storageBucket: "studio-afro-hair.firebasestorage.app",
-      messagingSenderId: "747537639779",
-      appId: "1:747537639779:web:b6c98b321e6a004e084b56",
-      measurementId: "G-W6Q8BXFMCJ"
-    };
-
-    const ALLOWED_ADMINS = [
-      "bezerramarcos931@gmail.com",
-      "samanthasuliwan@gmail.com"
-    ];
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: "select_account" });
-
-    const loadingScreen = document.getElementById("loading-screen");
-    const loginScreen = document.getElementById("login-screen");
-    const appShell = document.getElementById("app-shell");
-    const authError = document.getElementById("auth-error");
-    const btnLogin = document.getElementById("btn-login");
-    const btnLogout = document.getElementById("btn-logout");
-    const userGreeting = document.getElementById("user-greeting");
-    const userAvatar = document.getElementById("user-avatar");
-
-    function showError(msg) {
-      authError.textContent = msg;
-      authError.classList.remove("hidden");
-    }
-
-    async function logAudit(action, details, userEmail) {
-      try {
-        await addDoc(collection(db, "audit_logs"), {
-          action,
-          details,
-          userEmail,
-          timestamp: serverTimestamp(),
-          userAgent: navigator.userAgent
-        });
-      } catch (e) {
-        console.warn("Log de auditoria pendente:", e.message);
-      }
-    }
-
-    btnLogin.addEventListener("click", async () => {
-      authError.classList.add("hidden");
-      try {
-        const result = await signInWithPopup(auth, provider);
-        const email = (result.user.email || "").toLowerCase();
-
-        if (!ALLOWED_ADMINS.includes(email)) {
-          await signOut(auth);
-          showError(`Acesso negado para "${email}". Apenas os administradores autorizados podem entrar.`);
-          return;
-        }
-
-        await logAudit("LOGIN_SUCCESS", "Acesso realizado ao painel", email);
-      } catch (error) {
-        if (error.code !== "auth/popup-closed-by-user") {
-          showError("Não foi possível concluir o login: " + error.message);
+    <nav class="bottom-nav">
