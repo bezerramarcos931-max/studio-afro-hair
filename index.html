@@ -5,153 +5,162 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#1c301d" />
   <title>Studio Afro Hair — Samantha Suliwan</title>
-  <link rel="icon" href="logo.png" type="image/png" />
-  <link rel="apple-touch-icon" href="logo.png" />
   <style>
-    :root {
-      --bg-deep: #132114;
-      --bg-brand: #264027;
-      --bg-card: #1b2e1c;
-      --border-gold: rgba(212, 163, 56, 0.35);
-      --gold: #d4a338;
-      --gold-light: #e8be5d;
-      --cream: #f5f5f0;
-      --muted: #a8b8a9;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg-deep); color: var(--cream); min-height: 100vh; display: flex; flex-direction: column; }
-    .hidden { display: none !important; }
-    .center-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; background: radial-gradient(circle at top, #264027 0%, #132114 75%); }
-    
-    .card-login { width: 100%; max-width: 380px; background: rgba(27, 46, 28, 0.92); border: 1px solid var(--border-gold); border-radius: 28px; padding: 34px 24px; text-align: center; box-shadow: 0 24px 48px rgba(0,0,0,0.55); }
-    .brand-circle { width: 116px; height: 116px; margin: 0 auto 18px; border-radius: 50%; border: 2px solid var(--gold); background: var(--bg-brand); overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
-    .brand-circle img { width: 100%; height: 100%; object-fit: cover; }
-    .brand-fallback { font-size: 32px; font-weight: 800; color: var(--gold); letter-spacing: 2px; }
-    
-    .sub-owner { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 4px; }
-    .title { font-size: 24px; font-weight: 800; color: #ffffff; letter-spacing: 1.5px; text-transform: uppercase; }
-    .slogan { font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--cream); opacity: 0.88; margin-top: 6px; }
-    .divider { width: 120px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 18px auto 24px; }
-    
-    .error-box { background: rgba(220, 38, 38, 0.16); border: 1px solid rgba(248, 113, 113, 0.4); color: #fecaca; font-size: 13px; padding: 12px; border-radius: 12px; margin-bottom: 18px; text-align: left; }
-    .btn-google { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--gold); background: #ffffff; color: #132114; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 12px; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,0.25); }
-    .btn-google:active { transform: scale(0.98); background: #f3f4f6; }
-    .foot-note { margin-top: 22px; font-size: 11px; color: var(--muted); }
-
-    header { position: sticky; top: 0; background: rgba(27, 46, 28, 0.96); border-bottom: 1px solid var(--border-gold); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; z-index: 20; }
-    .header-left { display: flex; align-items: center; gap: 12px; }
-    .logo-sm { width: 42px; height: 42px; border-radius: 50%; border: 1.5px solid var(--gold); background: var(--bg-brand); overflow: hidden; display: flex; align-items: center; justify-content: center; color: var(--gold); font-weight: 800; font-size: 14px; }
-    .logo-sm img { width: 100%; height: 100%; object-fit: cover; }
-    .header-title { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
-    .header-sub { font-size: 12px; color: var(--gold-light); }
-    .header-right { display: flex; align-items: center; gap: 10px; }
-    .avatar { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--gold); object-fit: cover; }
-    .btn-logout { padding: 7px 12px; border-radius: 10px; background: var(--bg-deep); border: 1px solid var(--border-gold); color: var(--cream); font-size: 12px; cursor: pointer; }
-
-    main.content { flex: 1; padding: 16px; max-width: 600px; width: 100%; margin: 0 auto 84px; display: flex; flex-direction: column; gap: 14px; }
-    .status-card { padding: 15px 16px; border-radius: 18px; background: rgba(38, 64, 39, 0.65); border: 1px solid var(--border-gold); display: flex; align-items: center; justify-content: space-between; }
-    .status-title { font-size: 13px; font-weight: 700; color: var(--gold-light); }
-    .status-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .dot { width: 10px; height: 10px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 8px #4ade80; }
-
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .kpi-card { padding: 16px; border-radius: 18px; background: var(--bg-card); border: 1px solid var(--border-gold); }
-    .kpi-label { font-size: 12px; color: var(--muted); }
-    .kpi-val { font-size: 20px; font-weight: 800; color: #fff; margin-top: 6px; }
-    .kpi-val.gold { color: var(--gold-light); }
-    .badge { display: inline-block; margin-top: 8px; font-size: 11px; padding: 3px 9px; border-radius: 99px; background: rgba(212, 163, 56, 0.15); color: var(--gold-light); border: 1px solid rgba(212, 163, 56, 0.25); }
-
-    .info-card { padding: 20px; border-radius: 18px; background: var(--bg-card); border: 1px solid var(--border-gold); text-align: center; }
-    .info-card h3 { font-size: 15px; color: var(--gold-light); margin-bottom: 6px; }
-    .info-card p { font-size: 13px; color: var(--muted); line-height: 1.5; }
-
-    nav.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #132114; border-top: 1px solid var(--border-gold); display: grid; grid-template-columns: repeat(5, 1fr); padding: 9px 4px; z-index: 20; }
-    .nav-btn { background: none; border: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 11px; cursor: pointer; }
-    .nav-btn.active { color: var(--gold-light); font-weight: 700; }
-    .nav-icon { font-size: 18px; }
-    .spinner { width: 38px; height: 38px; border: 4px solid rgba(212,163,56,0.25); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 14px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    :root { --deep:#132114; --brand:#264027; --card:#1b2e1c; --border:rgba(212,163,56,.35); --gold:#d4a338; --gold2:#e8be5d; --cream:#f5f5f0; --muted:#a8b8a9; }
+    * { box-sizing:border-box; margin:0; padding:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+    body { background:var(--deep); color:var(--cream); min-height:100vh; display:flex; flex-direction:column; }
+    .hidden { display:none !important; }
+    .center { flex:1; display:flex; align-items:center; justify-content:center; padding:24px; background:radial-gradient(circle at top,#264027 0%,#132114 75%); }
+    .box { width:100%; max-width:380px; background:rgba(27,46,28,.95); border:1px solid var(--border); border-radius:28px; padding:34px 24px; text-align:center; box-shadow:0 24px 48px rgba(0,0,0,.55); }
+    .logo { width:96px; height:96px; margin:0 auto 16px; border-radius:50%; border:2px solid var(--gold); background:var(--brand); display:flex; align-items:center; justify-content:center; font-size:30px; font-weight:800; color:var(--gold); letter-spacing:2px; overflow:hidden; }
+    .logo img { width:100%; height:100%; object-fit:cover; }
+    .owner { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:4px; }
+    h1 { font-size:23px; font-weight:800; color:#fff; letter-spacing:1.5px; text-transform:uppercase; }
+    .slogan { font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:var(--cream); opacity:.85; margin-top:6px; }
+    .line { width:110px; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:18px auto 24px; }
+    .err { background:rgba(220,38,38,.18); border:1px solid rgba(248,113,113,.4); color:#fecaca; font-size:13px; padding:12px; border-radius:12px; margin-bottom:16px; text-align:left; }
+    .btn-g { width:100%; padding:14px 16px; border-radius:14px; border:1px solid var(--gold); background:#fff; color:#132114; font-size:15px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:10px; cursor:pointer; }
+    .note { margin-top:20px; font-size:11px; color:var(--muted); }
+    header { position:sticky; top:0; background:rgba(27,46,28,.96); border-bottom:1px solid var(--border); padding:12px 16px; display:flex; align-items:center; justify-content:space-between; }
+    .h-left { display:flex; align-items:center; gap:10px; }
+    .logo-sm { width:38px; height:38px; border-radius:50%; border:1.5px solid var(--gold); background:var(--brand); display:flex; align-items:center; justify-content:center; color:var(--gold); font-weight:800; font-size:13px; overflow:hidden; }
+    .logo-sm img { width:100%; height:100%; object-fit:cover; }
+    .btn-out { padding:7px 12px; border-radius:10px; background:var(--deep); border:1px solid var(--border); color:var(--cream); font-size:12px; cursor:pointer; }
+    main { flex:1; padding:16px; max-width:600px; width:100%; margin:0 auto 80px; display:flex; flex-direction:column; gap:14px; }
+    .card { padding:16px; border-radius:18px; background:var(--card); border:1px solid var(--border); }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .badge { display:inline-block; margin-top:8px; font-size:11px; padding:3px 9px; border-radius:99px; background:rgba(212,163,56,.15); color:var(--gold2); border:1px solid rgba(212,163,56,.25); }
+    nav { position:fixed; bottom:0; left:0; right:0; background:#132114; border-top:1px solid var(--border); display:grid; grid-template-columns:repeat(5,1fr); padding:9px 4px; }
+    nav button { background:none; border:none; color:var(--muted); display:flex; flex-direction:column; align-items:center; gap:3px; font-size:11px; }
+    nav button.active { color:var(--gold2); font-weight:700; }
   </style>
 </head>
 <body>
 
-  <div id="loading-screen" class="center-screen">
-    <div class="spinner"></div>
-    <p style="font-size:14px; color:#a8b8a9;">Verificando credenciais...</p>
-  </div>
-
-  <div id="login-screen" class="center-screen hidden">
-    <div class="card-login">
-      <div class="brand-circle">
-        <img src="logo.png" alt="Studio Afro Hair" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
-        <span class="brand-fallback" style="display:none;">SA</span>
+  <div id="login-screen" class="center">
+    <div class="box">
+      <div class="logo">
+        <img src="logo.png" alt="SA" onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
+        <span style="display:none;">SA</span>
       </div>
-      <div class="sub-owner">Samantha Suliwan</div>
-      <h1 class="title">Studio Afro Hair</h1>
+      <div class="owner">Samantha Suliwan</div>
+      <h1>Studio Afro Hair</h1>
       <p class="slogan">A beleza que conduz</p>
-      <div class="divider"></div>
-
-      <div id="auth-error" class="error-box hidden"></div>
-
-      <button id="btn-login" type="button" class="btn-google">
-        <svg width="20" height="20" viewBox="0 0 24 24">
-          <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/>
-          <path fill="#34A853" d="M12 24c3.3 0 6.08-1.09 8.1-2.96l-3.88-3.05c-1.1.74-2.51 1.18-4.22 1.18-3.24 0-5.99-2.19-6.97-5.13H1.02v3.14C3.05 21.2 7.24 24 12 24Z"/>
-          <path fill="#FBBC05" d="M5.03 14.04c-.25-.74-.39-1.54-.39-2.36 0-.82.14-1.62.39-2.36V6.18H1.02C.37 7.47 0 8.93 0 10.48s.37 3.01 1.02 4.3l4.01-3.14Z"/>
-          <path fill="#EA4335" d="M12 4.75c1.79 0 3.41.62 4.68 1.82l3.51-3.51C18.07 1.19 15.3 0 12 0 7.24 0 3.05 2.8 1.02 6.82l4.01 3.14c.98-2.94 3.73-5.21 6.97-5.21Z"/>
-        </svg>
-        Entrar com Google
-      </button>
-
-      <p class="foot-note">Acesso restrito exclusivamente aos administradores autorizados.</p>
+      <div class="line"></div>
+      <div id="auth-error" class="err hidden"></div>
+      <button id="btn-login" type="button" class="btn-g">Entrar com Google</button>
+      <p class="note">Acesso restrito exclusivamente aos administradores autorizados.</p>
     </div>
   </div>
 
   <div id="app-shell" class="hidden">
     <header>
-      <div class="header-left">
-        <div class="logo-sm">
-          <img src="logo.png" alt="SA" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
-          <span style="display:none;">SA</span>
-        </div>
+      <div class="h-left">
+        <div class="logo-sm">SA</div>
         <div>
-          <div class="header-title">Studio Afro Hair</div>
-          <div id="user-greeting" class="header-sub">Carregando...</div>
+          <div style="font-size:15px;font-weight:700;color:#fff;">Studio Afro Hair</div>
+          <div id="user-greeting" style="font-size:12px;color:var(--gold2);">Administrador</div>
         </div>
       </div>
-      <div class="header-right">
-        <img id="user-avatar" src="" alt="Admin" class="avatar hidden" />
-        <button id="btn-logout" class="btn-logout">Sair</button>
-      </div>
+      <button id="btn-logout" class="btn-out">Sair</button>
     </header>
-
-    <main class="content">
-      <div class="status-card">
+    <main>
+      <div class="card" style="display:flex;justify-content:space-between;align-items:center;">
         <div>
-          <div class="status-title">Sistema Conectado e Protegido</div>
-          <div class="status-sub">Samantha Suliwan • Firestore Ativo</div>
+          <div style="font-size:13px;font-weight:700;color:var(--gold2);">Sistema Conectado e Protegido</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">Samantha Suliwan • Firestore Ativo</div>
         </div>
-        <div class="dot"></div>
+        <span style="width:10px;height:10px;border-radius:50%;background:#4ade80;"></span>
       </div>
-
-      <div class="grid-2">
-        <div class="kpi-card">
-          <div class="kpi-label">Caixa Hoje</div>
-          <div class="kpi-val">R$ 0,00</div>
+      <div class="grid">
+        <div class="card">
+          <div style="font-size:12px;color:var(--muted);">Caixa Hoje</div>
+          <div style="font-size:20px;font-weight:800;margin-top:6px;">R$ 0,00</div>
           <span class="badge">Fechado</span>
         </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Agenda Hoje</div>
-          <div class="kpi-val gold">0 clientes</div>
+        <div class="card">
+          <div style="font-size:12px;color:var(--muted);">Agenda Hoje</div>
+          <div style="font-size:20px;font-weight:800;color:var(--gold2);margin-top:6px;">0 clientes</div>
           <span class="badge">Módulo 2</span>
         </div>
       </div>
-
-      <div class="info-card">
-        <h3>Identidade Oficial Aplicada!</h3>
-        <p>Autenticação exclusiva validada. Próxima etapa: construir o <strong>Módulo de Caixa e Transações</strong> ou <strong>Catálogo de Serviços e Clientes</strong>.</p>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:15px;font-weight:700;color:var(--gold2);margin-bottom:6px;">Painel Ativo!</div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.5;">Pronto para avançar para o Módulo de Caixa ou Agenda.</p>
       </div>
     </main>
+    <nav>
+      <button class="active"><span style="font-size:18px;">🏠</span><span>Início</span></button>
+      <button><span style="font-size:18px;">📅</span><span>Agenda</span></button>
+      <button><span style="font-size:18px;">💰</span><span>Caixa</span></button>
+      <button><span style="font-size:18px;">💇🏾‍♀️</span><span>Clientes</span></button>
+      <button><span style="font-size:18px;">⚙️</span><span>Mais</span></button>
+    </nav>
+  </div>
 
-    <nav class="bottom-nav">
-      <button class="nav-btn active"><span class="nav-icon">🏠</span><span>Início</span></button>
+  <script type="module">
+    import { initializeApp } from "https://gstatic.com";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://gstatic.com";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://gstatic.com";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDf2WEzBmcp2DPiqE8LLB5V9XDUoXr1UlE",
+      authDomain: "://firebaseapp.com",
+      projectId: "studio-afro-hair",
+      storageBucket: "studio-afro-hair.firebasestorage.app",
+      messagingSenderId: "747537639779",
+      appId: "1:747537639779:web:b6c98b321e6a004e084b56",
+      measurementId: "G-W6Q8BXFMCJ"
+    };
+
+    const ALLOWED = ["bezerramarcos931@gmail.com", "samanthasuliwan@gmail.com"];
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
+
+    const loginScreen = document.getElementById("login-screen");
+    const appShell = document.getElementById("app-shell");
+    const authError = document.getElementById("auth-error");
+    const btnLogin = document.getElementById("btn-login");
+    const btnLogout = document.getElementById("btn-logout");
+
+    function showErr(m) { authError.textContent = m; authError.classList.remove("hidden"); }
+
+    btnLogin.onclick = async () => {
+      authError.classList.add("hidden");
+      btnLogin.textContent = "Conectando...";
+      try {
+        const res = await signInWithPopup(auth, provider);
+        const email = (res.user.email || "").toLowerCase();
+        if (!ALLOWED.includes(email)) {
+          await signOut(auth);
+          showErr("Acesso negado para: " + email);
+          btnLogin.textContent = "Entrar com Google";
+          return;
+        }
+        await addDoc(collection(db, "audit_logs"), { action: "LOGIN", userEmail: email, timestamp: serverTimestamp() }).catch(()=>{});
+      } catch (e) {
+        btnLogin.textContent = "Entrar com Google";
+        if (e.code !== "auth/popup-closed-by-user") showErr("Erro: " + e.message);
+      }
+    };
+
+    btnLogout.onclick = async () => { await signOut(auth); location.reload(); };
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user && ALLOWED.includes((user.email || "").toLowerCase())) {
+        const nome = (user.displayName || user.email.split("@")).split(" ");
+        document.getElementById("user-greeting").textContent = "Olá, " + nome;
+        loginScreen.classList.add("hidden");
+        appShell.classList.remove("hidden");
+      } else {
+        if (user) await signOut(auth);
+        loginScreen.classList.remove("hidden");
+        appShell.classList.add("hidden");
+      }
+    });
+  </script>
+</body>
+</html>
