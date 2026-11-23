@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-  <meta name="theme-color" content="#132114" />
   <title>Studio Afro Hair — Samantha Suliwan</title>
   <style>
     :root { --deep:#132114; --brand:#264027; --card:#1b2e1c; --border:rgba(212,163,56,.35); --gold:#d4a338; --gold2:#e8be5d; --cream:#f5f5f0; --muted:#a8b8a9; --green:#4ade80; --red:#f87171; --blue:#60a5fa; }
@@ -96,74 +95,10 @@
           <div class="grid"><div><label>Tipo</label><select id="tx-tp"><option value="ENTRADA">Entrada (+)</option><option value="SAIDA">Saída / Despesa (-)</option></select></div><div><label>Forma</label><select id="tx-mt"><option value="Pix">Pix</option><option value="Dinheiro">Dinheiro</option><option value="Cartão Crédito">Cartão Crédito</option><option value="Cartão Débito">Cartão Débito</option></select></div></div>
           <label>Descrição</label><input type="text" id="tx-ds" placeholder="Ex: Venda pomada / Compra jumbo">
           <label>Valor (R$)</label><input type="number" id="tx-vl" step="0.01">
-    <div style="display:flex;gap:8px;margin-top:12px"><button id="btn-save-tx" class="btn-gold" style="flex:1">Salvar</button><button onclick="closeBox('f-tx')" class="btn-sm">Cancelar</button></div>
-
-          <main id="tab-clientes" class="hidden">
-      <div class="subtabs">
-        <button id="st-cli" class="active" onclick="subTab('cli')">💇🏾‍♀️ Clientes</button>
-        <button id="st-srv" onclick="subTab('srv')">✨ Serviços</button>
-      </div>
-      <div id="pane-cli">
-        <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-          <b>Ficha & Histórico</b><button onclick="toggleBox('f-cli')" class="btn-gold">+ Cliente</button>
+          <div style="display:flex;gap:8px;margin-top:12px"><button id="btn-save-tx" class="btn-gold" style="flex:1">Salvar</button><button onclick="closeBox('f-tx')" class="btn-sm">Cancelar</button></div>
         </div>
-        <div id="f-cli" class="card hidden" style="margin-bottom:10px">
-          <label>Nome Completo</label><input type="text" id="c-nome">
-          <div class="grid"><div><label>WhatsApp</label><input type="tel" id="c-tel" placeholder="87999990000"></div><div><label>Aniversário</label><input type="date" id="c-nasc"></div></div>
-          <label>Curvatura / Notas Capilares</label><input type="text" id="c-obs" placeholder="Ex: 4B/4C, couro cabeludo sensível...">
-          <div style="display:flex;gap:8px;margin-top:12px"><button id="btn-save-cli" class="btn-gold" style="flex:1">Salvar Cliente</button><button onclick="closeBox('f-cli')" class="btn-sm">Cancelar</button></div>
-        </div>
-        <div id="cli-list"></div>
-      </div>
-      <div id="pane-srv" class="hidden">
-        <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-          <b>Catálogo & Preços</b><button onclick="novoServico()" class="btn-gold">+ Serviço</button>
-        </div>
-        <div id="f-srv" class="card hidden" style="margin-bottom:10px">
-          <input type="hidden" id="s-id">
-          <label>Nome do Serviço</label><input type="text" id="s-nome" placeholder="Ex: Box Braids Média">
-          <div class="grid"><div><label>Preço Base (R$)</label><input type="number" id="s-val" step="0.01"></div><div><label>Duração Estimada</label><input type="text" id="s-dur" placeholder="Ex: 4h"></div></div>
-          <div style="display:flex;gap:8px;margin-top:12px"><button id="btn-save-srv" class="btn-gold" style="flex:1">Salvar Serviço</button><button onclick="closeBox('f-srv')" class="btn-sm">Cancelar</button></div>
-        </div>
-        <div id="srv-list"></div>
-      </div>
-    </main>
 
-    <main id="tab-estoque" class="hidden">
-      <div class="card" style="display:flex;justify-content:space-between;align-items:center">
-        <div><b>Estoque de Insumos</b><div style="font-size:11px;color:var(--muted)">Compras lançam saída auto no Caixa</div></div>
-        <button onclick="toggleBox('f-est')" class="btn-gold">+ Produto</button>
-      </div>
-      <div id="f-est" class="card hidden">
-        <label>Produto</label><input type="text" id="e-nome" placeholder="Ex: Pomada Modeladora Extra Forte">
-        <div class="grid"><div><label>Qtd Atual</label><input type="number" id="e-qtd" value="1"></div><div><label>Alerta Mínimo</label><input type="number" id="e-min" value="2"></div></div>
-        <div style="display:flex;gap:8px;margin-top:12px"><button id="btn-save-est" class="btn-gold" style="flex:1">Salvar Produto</button><button onclick="closeBox('f-est')" class="btn-sm">Cancelar</button></div>
-      </div>
-      <div id="est-list"></div>
-    </main>
-
-    <main id="tab-auditoria" class="hidden">
-      <div class="card">
-        <b style="color:var(--gold2)">🛡️ Auditoria & Integridade dos Dados</b>
-        <p style="font-size:12px;color:var(--muted);margin-top:4px">Todos os registros anteriores foram preservados. Veja o resumo real do banco abaixo:</p>
-        <div id="aud-stats" class="grid" style="margin-top:10px"></div>
-      </div>
-      <div class="card">
-        <b style="color:var(--gold2)">Histórico Recente de Operações</b>
-        <div id="aud-logs" style="font-size:12px;margin-top:8px;color:var(--muted)">Carregando logs...</div>
-      </div>
-    </main>
-
-    <nav>
-      <button id="nav-home" class="active" onclick="switchTab('home')"><span style="font-size:17px">🏠</span><span>Início</span></button>
-      <button id="nav-agenda" onclick="switchTab('agenda')"><span style="font-size:17px">📅</span><span>Agenda</span></button>
-      <button id="nav-caixa" onclick="switchTab('caixa')"><span style="font-size:17px">💰</span><span>Caixa</span></button>
-      <button id="nav-clientes" onclick="switchTab('clientes','cli')"><span style="font-size:17px">💇🏾‍♀️</span><span>Clientes</span></button>
-      <button id="nav-estoque" onclick="switchTab('estoque')"><span style="font-size:17px">📦</span><span>Estoque</span></button>
-      <button id="nav-auditoria" onclick="switchTab('auditoria')"><span style="font-size:17px">🛡️</span><span>Admin</span></button>
-    </nav>
-  </div>
-  <script src="https://gstatic.com"></script>
+          <script src="https://gstatic.com"></script>
   <script src="https://gstatic.com"></script>
   <script src="https://gstatic.com"></script>
   <script>
@@ -287,7 +222,9 @@
       if (!$("e-nome").value.trim()) return alert("Informe o nome do produto");
       db.collection("inventory").add({ nome: $("e-nome").value.trim(), qtd: Number($("e-qtd").value || 0), min: Number($("e-min").value || 1) })
         .then(() => { logAudit("Estoque", "Novo Produto", $("e-nome").value); $("e-nome").value = ""; closeBox("f-est"); loadEst(); });
-    }    window.mudarQtd = (id, q) => db.collection("inventory").doc(id).update({ qtd: Math.max(0, q) }).then(loadEst);
+    };
+
+        window.mudarQtd = (id, q) => db.collection("inventory").doc(id).update({ qtd: Math.max(0, q) }).then(loadEst);
     window.comprarEst = (id, nome, qtdAtual) => {
       const add = parseInt(prompt("Quantas unidades de '" + nome + "' comprou?", "1") || "0", 10);
       if (!add || add <= 0) return;
@@ -342,7 +279,7 @@
         $("m-in").textContent = brl(ent); $("m-out").textContent = brl(sai); $("m-lucro").textContent = brl(ent - sai);
         $("m-qtd").textContent = qtd; $("m-ticket").textContent = brl(qtd ? ent / qtd : 0);
         $("m-pm").innerHTML = Object.keys(pm).length ? Object.entries(pm).map(([k, v]) => `<div style="display:flex;justify-content:space-between;padding:4px 0"><span>${k}</span><b style="color:#fff">${brl(v)}</b></div>`).join("") : "Nenhuma entrada neste mês.";
-        const rank = Object.entries(topSrv).sort((a, b) => b - a);
+        const rank = Object.entries(topSrv).sort((a, b) => b[1] - a[1]);
         $("m-top").innerHTML = rank.length ? rank.map(([k, v]) => `<div style="display:flex;justify-content:space-between;padding:4px 0"><span>${k}</span><b style="color:var(--gold2)">${v}x</b></div>`).join("") : "Nenhum atendimento concluído neste mês.";
       });
     }
@@ -364,7 +301,7 @@
       db.collection("services").get().then(s => {
         srvs = []; s.forEach(d => srvs.push({ ...d.data(), id: d.id }));
         $("ag-srv").innerHTML = srvs.length ? srvs.map(x => `<option value="${x.nome}">${x.nome} (${brl(x.val)})</option>`).join("") : '<option value="Box Braids">Cadastre um serviço na aba Serviços</option>';
-        if (srvs.length) $("ag-val").value = srvs.val;
+        if (srvs.length) $("ag-val").value = srvs[0].val;
         $("srv-list").innerHTML = srvs.length ? srvs.map(x => `<div class="card" style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><b>${x.nome}</b><div style="font-size:12px;color:var(--gold2)">${brl(x.val)} ${x.dur ? "• " + x.dur : ""}</div></div><div style="display:flex;gap:6px"><button class="btn-sm info" onclick="editarServico('${x.id}','${x.nome}',${x.val},'${x.dur || ""}')">Editar</button><button class="btn-sm del" onclick="delDoc('services','${x.id}',loadSrv)">Excluir</button></div></div>`).join("") : '<div class="card" style="text-align:center;color:var(--muted)">Nenhum serviço cadastrado. Clique em + Serviço acima!</div>';
       });
     }
@@ -379,4 +316,5 @@
     }
 
     function loadAuditoria() {
-;    
+
+    
