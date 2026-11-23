@@ -1,3 +1,6 @@
 {
-  "hosting": { "public": "." }
+  "hosting": {
+    "site": "studio-afro-hair",
+    "public": "."
+  }
 }
