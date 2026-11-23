@@ -82,6 +82,10 @@
           <h3 id="h-est" style="color:var(--gold2);margin-top:4px">0 itens baixos</h3>
         </div>
       </div>
+      <div id="h-bday-card" class="card hidden" style="border-color:var(--gold)">
+        <b style="color:var(--gold2)">🎂 Aniversariantes deste Mês</b>
+        <div id="h-bday" style="font-size:13px;margin-top:8px"></div>
+      </div>
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
           <b style="color:var(--gold2)">Próximos Horários de Hoje</b>
@@ -93,7 +97,7 @@
 
     <main id="tab-agenda" class="hidden">
       <div class="card" style="display:flex;justify-content:space-between;align-items:center">
-        <div><b>Agenda de Atendimentos</b><div style="font-size:11px;color:var(--muted)">WhatsApp automático + baixa no Caixa</div></div>
+        <div><b>Agenda de Atendimentos</b><div style="font-size:11px;color:var(--muted)">Salva cliente auto + baixa no Caixa</div></div>
         <button onclick="$('f-ag').classList.toggle('hidden')" class="btn-gold">+ Novo</button>
       </div>
       <div id="f-ag" class="card hidden">
@@ -119,40 +123,61 @@
       </div>
       <div id="ag-list"></div>
     </main>
-
-    <main id="tab-caixa" class="hidden">
-      <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-        <div><b>Controle de Caixa</b><div id="cx-st" style="font-size:12px;color:var(--gold2)"></div></div>
-        <div style="display:flex;gap:6px">
-          <button id="btn-sess" class="btn-sm ok">Abrir Caixa</button>
-          <button onclick="$('f-tx').classList.toggle('hidden')" class="btn-gold">+ Lançar</button>
+        <main id="tab-caixa" class="hidden">
+      <div class="subtabs">
+        <button id="st-dia" class="active" onclick="subCx('dia')">📅 Caixa Diário</button>
+        <button id="st-mes" onclick="subCx('mes')">📊 Relatório Mensal</button>
+      </div>
+      <div id="pane-dia">
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+          <div><b>Controle de Caixa</b><div id="cx-st" style="font-size:12px;color:var(--gold2)"></div></div>
+          <div style="display:flex;gap:6px">
+            <button id="btn-sess" class="btn-sm ok">Abrir Caixa</button>
+            <button onclick="$('f-tx').classList.toggle('hidden')" class="btn-gold">+ Lançar</button>
+          </div>
         </div>
-      </div>
-      <div id="f-tx" class="card hidden">
-        <div class="grid">
-          <div><label>Tipo</label><select id="tx-tp"><option value="ENTRADA">Entrada (+)</option><option value="SAIDA">Saída / Despesa (-)</option></select></div>
-          <div><label>Forma</label><select id="tx-mt"><option value="Pix">Pix</option><option value="Dinheiro">Dinheiro</option><option value="Cartão Crédito">Cartão Crédito</option><option value="Cartão Débito">Cartão Débito</option></select></div>
+        <div id="f-tx" class="card hidden" style="margin-bottom:10px">
+          <div class="grid">
+            <div><label>Tipo</label><select id="tx-tp"><option value="ENTRADA">Entrada (+)</option><option value="SAIDA">Saída / Despesa (-)</option></select></div>
+            <div><label>Forma</label><select id="tx-mt"><option value="Pix">Pix</option><option value="Dinheiro">Dinheiro</option><option value="Cartão Crédito">Cartão Crédito</option><option value="Cartão Débito">Cartão Débito</option></select></div>
+          </div>
+          <label>Descrição</label><input type="text" id="tx-ds" placeholder="Ex: Venda pomada / Compra jumbo">
+          <label>Valor (R$)</label><input type="number" id="tx-vl" step="0.01">
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button id="btn-save-tx" class="btn-gold" style="flex:1">Salvar</button>
+            <button onclick="$('f-tx').classList.add('hidden')" class="btn-sm">Cancelar</button>
+          </div>
         </div>
-        <label>Descrição</label><input type="text" id="tx-ds" placeholder="Ex: Venda pomada / Compra jumbo">
-        <label>Valor (R$)</label><input type="number" id="tx-vl" step="0.01">
-        <div style="display:flex;gap:8px;margin-top:12px">
-          <button id="btn-save-tx" class="btn-gold" style="flex:1">Salvar</button>
-          <button onclick="$('f-tx').classList.add('hidden')" class="btn-sm">Cancelar</button>
+        <div class="grid3" style="margin-bottom:10px">
+          <div class="card" style="padding:12px"><small style="color:var(--muted)">Entradas</small><div id="cx-in" style="font-weight:800;color:var(--green);margin-top:4px">R$ 0,00</div></div>
+          <div class="card" style="padding:12px"><small style="color:var(--muted)">Saídas</small><div id="cx-out" style="font-weight:800;color:var(--red);margin-top:4px">R$ 0,00</div></div>
+          <div class="card" style="padding:12px"><small style="color:var(--muted)">Saldo</small><div id="cx-bal" style="font-weight:800;color:var(--gold2);margin-top:4px">R$ 0,00</div></div>
         </div>
+        <div class="card" id="cx-methods" style="font-size:12px;color:var(--muted);margin-bottom:10px"></div>
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <b style="font-size:13px;color:var(--gold2)">Data:</b>
+          <input type="date" id="flt-cx" style="width:auto;margin:0">
+        </div>
+        <div id="tx-list"></div>
       </div>
-            <div class="grid3">
-        <div class="card" style="padding:12px"><small style="color:var(--muted)">Entradas</small><div id="cx-in" style="font-weight:800;color:var(--green);margin-top:4px">R$ 0,00</div></div>
-        <div class="card" style="padding:12px"><small style="color:var(--muted)">Saídas</small><div id="cx-out" style="font-weight:800;color:var(--red);margin-top:4px">R$ 0,00</div></div>
-        <div class="card" style="padding:12px"><small style="color:var(--muted)">Saldo</small><div id="cx-bal" style="font-weight:800;color:var(--gold2);margin-top:4px">R$ 0,00</div></div>
+      <div id="pane-mes" class="hidden">
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <b style="color:var(--gold2)">Mês de Referência:</b>
+          <input type="month" id="flt-mes" style="width:auto;margin:0">
+        </div>
+        <div class="grid3" style="margin-bottom:10px">
+          <div class="card" style="padding:12px"><small style="color:var(--muted)">Faturamento</small><div id="m-in" style="font-weight:800;color:var(--green);margin-top:4px">R$ 0,00</div></div>
+          <div class="card" style="padding:12px"><small style="color:var(--muted)">Despesas</small><div id="m-out" style="font-weight:800;color:var(--red);margin-top:4px">R$ 0,00</div></div>
+          <div class="card" style="padding:12px"><small style="color:var(--muted)">Lucro Líquido</small><div id="m-lucro" style="font-weight:800;color:var(--gold2);margin-top:4px">R$ 0,00</div></div>
+        </div>
+        <div class="grid" style="margin-bottom:10px">
+          <div class="card"><small style="color:var(--muted)">Atendimentos Concluídos</small><h3 id="m-qtd" style="margin-top:4px">0</h3></div>
+          <div class="card"><small style="color:var(--muted)">Ticket Médio</small><h3 id="m-ticket" style="color:var(--gold2);margin-top:4px">R$ 0,00</h3></div>
+        </div>
+        <div class="card" style="margin-bottom:10px"><b style="color:var(--gold2)">Por Forma de Pagamento</b><div id="m-pm" style="font-size:13px;margin-top:8px;color:var(--muted)"></div></div>
+        <div class="card"><b style="color:var(--gold2)">Serviços Mais Realizados no Mês</b><div id="m-top" style="font-size:13px;margin-top:8px;color:var(--muted)"></div></div>
       </div>
-      <div class="card" id="cx-methods" style="font-size:12px;color:var(--muted)"></div>
-      <div class="card" style="display:flex;justify-content:space-between;align-items:center">
-        <b style="font-size:13px;color:var(--gold2)">Data:</b>
-        <input type="date" id="flt-cx" style="width:auto;margin:0">
-      </div>
-      <div id="tx-list"></div>
     </main>
-
     <main id="tab-clientes" class="hidden">
       <div class="subtabs">
         <button id="st-cli" class="active" onclick="subTab('cli')">💇🏾‍♀️ Clientes</button>
@@ -160,7 +185,7 @@
       </div>
       <div id="pane-cli">
         <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-          <b>Ficha de Clientes</b><button onclick="$('f-cli').classList.toggle('hidden')" class="btn-gold">+ Cliente</button>
+          <b>Ficha & Histórico</b><button onclick="$('f-cli').classList.toggle('hidden')" class="btn-gold">+ Cliente</button>
         </div>
         <div id="f-cli" class="card hidden" style="margin-bottom:10px">
           <label>Nome Completo</label><input type="text" id="c-nome">
@@ -191,7 +216,7 @@
 
     <main id="tab-estoque" class="hidden">
       <div class="card" style="display:flex;justify-content:space-between;align-items:center">
-        <div><b>Estoque de Insumos</b><div style="font-size:11px;color:var(--muted)">Fibras, pomadas, óleos e materiais</div></div>
+        <div><b>Estoque de Insumos</b><div style="font-size:11px;color:var(--muted)">Compras lançam saída auto no Caixa</div></div>
         <button onclick="$('f-est').classList.toggle('hidden')" class="btn-gold">+ Produto</button>
       </div>
       <div id="f-est" class="card hidden">
@@ -222,7 +247,7 @@
       const $ = id => document.getElementById(id);
       const today = () => new Date().toLocaleDateString("sv-SE");
       const brl = v => Number(v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-      let sess = null, srvs = [];
+      let sess = null, srvs = [], clis = [], allAppts = [];
 
       window.switchTab = t => {
         ["home","agenda","caixa","clientes","estoque"].forEach(x => { $("tab-"+x).classList.add("hidden"); $("nav-"+x).classList.remove("active"); });
@@ -231,6 +256,11 @@
       window.subTab = s => {
         ["cli","srv"].forEach(x => { $("pane-"+x).classList.add("hidden"); $("st-"+x).classList.remove("active"); });
         $("pane-"+s).classList.remove("hidden"); $("st-"+s).classList.add("active");
+      };
+      window.subCx = s => {
+        ["dia","mes"].forEach(x => { $("pane-"+x).classList.add("hidden"); $("st-"+x).classList.remove("active"); });
+        $("pane-"+s).classList.remove("hidden"); $("st-"+s).classList.add("active");
+        if (s == "mes") loadMes();
       };
 
       firebase.initializeApp({
@@ -242,16 +272,25 @@
       prov.setCustomParameters({ prompt: "select_account" });
 
       $("ag-date").value = $("flt-ag").value = $("flt-cx").value = today();
-      $("flt-ag").onchange = loadAg; $("flt-cx").onchange = loadCx;
+      $("flt-mes").value = today().slice(0, 7);
+      $("flt-ag").onchange = loadAg; $("flt-cx").onchange = loadCx; $("flt-mes").onchange = loadMes;
       $("ag-srv").onchange = () => { const s = srvs.find(x => x.nome == $("ag-srv").value); if (s) $("ag-val").value = s.val; };
+      $("ag-cli").onchange = () => { const c = clis.find(x => x.nome.toLowerCase() == $("ag-cli").value.trim().toLowerCase()); if (c && c.tel && !$("ag-tel").value) $("ag-tel").value = c.tel; };
 
       $("btn-save-ag").onclick = () => {
-        if (!$("ag-cli").value) return alert("Informe a cliente");
+        const nome = $("ag-cli").value.trim(), tel = $("ag-tel").value.replace(/\D/g,"");
+        if (!nome) return alert("Informe a cliente");
         db.collection("appointments").add({
-          date: $("ag-date").value, time: $("ag-time").value, client: $("ag-cli").value,
-          phone: $("ag-tel").value.replace(/\D/g,""), service: $("ag-srv").value,
-          price: Number($("ag-val").value || 0), obs: $("ag-obs").value, status: "Agendado"
-        }).then(() => { $("ag-cli").value = $("ag-tel").value = $("ag-obs").value = ""; $("f-ag").classList.add("hidden"); $("flt-ag").value = $("ag-date").value; loadAg(); });
+          date: $("ag-date").value, time: $("ag-time").value, client: nome,
+          phone: tel, service: $("ag-srv").value, price: Number($("ag-val").value || 0),
+          obs: $("ag-obs").value, status: "Agendado"
+        }).then(() => {
+          const existe = clis.some(x => x.nome.toLowerCase() == nome.toLowerCase());
+          if (!existe) db.collection("clients").add({ nome, tel, nasc: "", obs: "Cadastro automático via Agenda" }).then(loadCli);
+          $("ag-cli").value = $("ag-tel").value = $("ag-obs").value = "";
+          $("f-ag").classList.add("hidden"); $("flt-ag").value = $("ag-date").value;
+          loadAllAppts(); loadAg();
+        });
       };
 
       window.concluir = (id, c, s, p, dt) => {
@@ -259,7 +298,7 @@
         if (!m) return;
         db.collection("appointments").doc(id).update({ status: "Concluído" })
           .then(() => p > 0 && db.collection("transactions").add({ date: dt, type: "ENTRADA", method: m, desc: c + " — " + s, amount: p }))
-          .then(() => { loadAg(); loadCx(); });
+          .then(() => { loadAllAppts(); loadAg(); loadCx(); });
       };
 
       window.delDoc = (col, id, fn) => { if (confirm("Excluir este registro?")) db.collection(col).doc(id).delete().then(fn); };
@@ -280,30 +319,45 @@
 
       $("btn-save-cli").onclick = () => {
         if (!$("c-nome").value) return;
-        db.collection("clients").add({ nome: $("c-nome").value, tel: $("c-tel").value.replace(/\D/g,""), nasc: $("c-nasc").value, obs: $("c-obs").value })
+        db.collection("clients").add({ nome: $("c-nome").value.trim(), tel: $("c-tel").value.replace(/\D/g,""), nasc: $("c-nasc").value, obs: $("c-obs").value })
           .then(() => { $("c-nome").value = $("c-tel").value = $("c-obs").value = ""; $("f-cli").classList.add("hidden"); loadCli(); });
       };
 
       $("btn-save-srv").onclick = () => {
         if (!$("s-nome").value) return;
-        db.collection("services").add({ nome: $("s-nome").value, val: Number($("s-val").value || 0), dur: $("s-dur").value })
+        db.collection("services").add({ nome: $("s-nome").value.trim(), val: Number($("s-val").value || 0), dur: $("s-dur").value })
           .then(() => { $("s-nome").value = $("s-val").value = $("s-dur").value = ""; $("f-srv").classList.add("hidden"); loadSrv(); });
       };
 
       $("btn-save-est").onclick = () => {
         if (!$("e-nome").value) return;
-        db.collection("inventory").add({ nome: $("e-nome").value, qtd: Number($("e-qtd").value || 0), min: Number($("e-min").value || 1) })
+        db.collection("inventory").add({ nome: $("e-nome").value.trim(), qtd: Number($("e-qtd").value || 0), min: Number($("e-min").value || 1) })
           .then(() => { $("e-nome").value = ""; $("f-est").classList.add("hidden"); loadEst(); });
       };
 
       window.mudarQtd = (id, q) => db.collection("inventory").doc(id).update({ qtd: Math.max(0, q) }).then(loadEst);
+
+      window.comprarEst = (id, nome, qtdAtual) => {
+        const add = parseInt(prompt("Quantas unidades de '" + nome + "' comprou?", "1") || "0", 10);
+        if (!add || add <= 0) return;
+        const custo = parseFloat((prompt("Valor total pago nessa compra (R$)? (0 para não lançar no caixa):", "0") || "0").replace(",", ".")) || 0;
+        db.collection("inventory").doc(id).update({ qtd: qtdAtual + add }).then(() => {
+          if (custo > 0) return db.collection("transactions").add({ date: today(), type: "SAIDA", method: "Pix", desc: "Compra Estoque: " + add + "x " + nome, amount: custo });
+        }).then(() => { loadEst(); loadCx(); });
+      };
+      function loadAllAppts() {
+        db.collection("appointments").get().then(s => {
+          allAppts = []; s.forEach(d => allAppts.push({ ...d.data(), id: d.id }));
+          loadCli();
+        });
+      }
 
       function loadAg() {
         const d = $("flt-ag").value;
         db.collection("appointments").where("date", "==", d).get().then(s => {
           let a = []; s.forEach(x => a.push({ ...x.data(), id: x.id }));
           a.sort((x, y) => (x.time || "").localeCompare(y.time || ""));
-          $("ag-list").innerHTML = a.length ? a.map(x => `<div class="card" style="margin-bottom:8px"><div style="display:flex;justify-content:space-between"><b>${x.time} — ${x.client}</b><span class="pill">${x.status}</span></div><div style="font-size:12px;color:var(--muted);margin:4px 0">${x.service} • <b style="color:var(--gold2)">${brl(x.price)}</b> ${x.obs ? "• " + x.obs : ""}</div><div style="display:flex;gap:6px;margin-top:8px">${x.phone ? `<a class="btn-sm" target="_blank" href="https://wa.me{x.phone}?text=Ol%C3%A1%20${encodeURIComponent(x.client)},%20confirmando%20seu%20hor%C3%A1rio%20no%20Studio%20Afro%20Hair%20%C3%A0s%20${x.time}!">WhatsApp</a>` : ""}${x.status != "Concluído" ? `<button class="btn-sm ok" onclick="concluir('${x.id}','${x.client}','${x.service}',${x.price},'${x.date}')">Concluir & Receber</button>` : ""}<button class="btn-sm del" onclick="delDoc('appointments','${x.id}',loadAg)">Excluir</button></div></div>`).join("") : '<div class="card" style="text-align:center;color:var(--muted)">Nenhum horário nesta data.</div>';
+          $("ag-list").innerHTML = a.length ? a.map(x => `<div class="card" style="margin-bottom:8px"><div style="display:flex;justify-content:space-between"><b>${x.time} — ${x.client}</b><span class="pill">${x.status}</span></div><div style="font-size:12px;color:var(--muted);margin:4px 0">${x.service} • <b style="color:var(--gold2)">${brl(x.price)}</b> ${x.obs ? "• " + x.obs : ""}</div><div style="display:flex;gap:6px;margin-top:8px">${x.phone ? `<a class="btn-sm" target="_blank" href="https://wa.me{x.phone}?text=Ol%C3%A1%20${encodeURIComponent(x.client)},%20confirmando%20seu%20hor%C3%A1rio%20no%20Studio%20Afro%20Hair%20%C3%A0s%20${x.time}!">WhatsApp</a>` : ""}${x.status != "Concluído" ? `<button class="btn-sm ok" onclick="concluir('${x.id}','${x.client}','${x.service}',${x.price},'${x.date}')">Concluir & Receber</button>` : ""}<button class="btn-sm del" onclick="delDoc('appointments','${x.id}',()=>{loadAllAppts();loadAg()})">Excluir</button></div></div>`).join("") : '<div class="card" style="text-align:center;color:var(--muted)">Nenhum horário nesta data.</div>';
           if (d == today()) {
             $("h-ag").textContent = a.length + " clientes";
             $("h-prev").textContent = "Previsto: " + brl(a.reduce((k, x) => k + Number(x.price || 0), 0));
@@ -330,20 +384,60 @@
         });
       }
 
+      function loadMes() {
+        const ym = $("flt-mes").value;
+        Promise.all([db.collection("transactions").get(), db.collection("appointments").get()]).then(([st, sa]) => {
+          let ent = 0, sai = 0, pm = {}, topSrv = {}, qtdConcl = 0;
+          st.forEach(d => {
+            const x = d.data();
+            if ((x.date || "").startsWith(ym)) {
+              if (x.type == "ENTRADA") { ent += Number(x.amount || 0); pm[x.method] = (pm[x.method] || 0) + Number(x.amount || 0); }
+              else sai += Number(x.amount || 0);
+            }
+          });
+          sa.forEach(d => {
+            const x = d.data();
+            if ((x.date || "").startsWith(ym) && x.status == "Concluído") {
+              qtdConcl++;
+              topSrv[x.service] = (topSrv[x.service] || 0) + 1;
+            }
+          });
+          $("m-in").textContent = brl(ent);
+          $("m-out").textContent = brl(sai);
+          $("m-lucro").textContent = brl(ent - sai);
+          $("m-qtd").textContent = qtdConcl;
+          $("m-ticket").textContent = brl(qtdConcl ? ent / qtdConcl : 0);
+          $("m-pm").innerHTML = Object.keys(pm).length ? Object.entries(pm).map(([k, v]) => `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(212,163,56,.12)"><span>${k}</span><b style="color:#fff">${brl(v)}</b></div>`).join("") : "Nenhuma entrada neste mês.";
+          const rank = Object.entries(topSrv).sort((a, b) => b - a);
+          $("m-top").innerHTML = rank.length ? rank.map(([k, v]) => `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(212,163,56,.12)"><span>${k}</span><b style="color:var(--gold2)">${v}x</b></div>`).join("") : "Nenhum atendimento concluído neste mês.";
+        });
+      }
+
       function loadCli() {
         db.collection("clients").get().then(s => {
-          let c = []; s.forEach(d => c.push({ ...d.data(), id: d.id }));
-          $("h-cli").textContent = c.length + " cadastradas";
-          $("dl-cli").innerHTML = c.map(x => `<option value="${x.nome}">`).join("");
-          $("cli-list").innerHTML = c.length ? c.map(x => `<div class="card" style="margin-bottom:8px"><div style="display:flex;justify-content:space-between"><b>${x.nome}</b>${x.tel ? `<a class="btn-sm" target="_blank" href="https://wa.me{x.tel}">WhatsApp</a>` : ""}</div><div style="font-size:12px;color:var(--muted);margin-top:4px">${x.nasc ? "🎂 " + x.nasc + " • " : ""}${x.obs || "Sem observações"}</div><button class="btn-sm del" style="margin-top:6px" onclick="delDoc('clients','${x.id}',loadCli)">Remover</button></div>`).join("") : '<div class="card" style="text-align:center;color:var(--muted)">Nenhuma cliente cadastrada.</div>';
-     });}
+          clis = []; s.forEach(d => clis.push({ ...d.data(), id: d.id }));
+          $("h-cli").textContent = clis.length + " cadastradas";
+          $("dl-cli").innerHTML = clis.map(x => `<option value="${x.nome}">`).join("");
+          const mesAtual = today().slice(5, 7);
+          const aniv = clis.filter(x => x.nasc && x.nasc.slice(5, 7) == mesAtual);
+          if (aniv.length) {
+            $("h-bday-card").classList.remove("hidden");
+            $("h-bday").innerHTML = aniv.map(x => `<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0"><span>🎉 <b>${x.nome}</b> (Dia ${x.nasc.slice(8,10)})</span>${x.tel ? `<a class="btn-sm ok" target="_blank" href="https://wa.me{x.tel}?text=Parab%C3%A9ns%20${encodeURIComponent(x.nome)}!%20O%20Studio%20Afro%20Hair%20deseja%20muitas%20felicidades!">Dar Parabéns</a>` : ""}</div>`).join("");
+          }
+          $("cli-list").innerHTML = clis.length ? clis.map(x => {
+            const hist = allAppts.filter(a => (a.client || "").toLowerCase() == x.nome.toLowerCase());
+            const gasto = hist.filter(a => a.status == "Concluído").reduce((k, a) => k + Number(a.price || 0), 0);
+            return `<div class="card" style="margin-bottom:8px"><div style="display:flex;justify-content:space-between"><b>${x.nome}</b>${x.tel ? `<a class="btn-sm" target="_blank" href="https://wa.me{x.tel}">WhatsApp</a>` : ""}</div><div style="font-size:12px;color:var(--muted);margin-top:4px">${x.nasc ? "🎂 " + x.nasc + " • " : ""}${x.obs || "Sem observações"}</div><div style="font-size:12px;color:var(--gold2);margin-top:6px">Visitas: <b>${hist.length}</b> • Total gasto: <b>${brl(gasto)}</b></div><button class="btn-sm del" style="margin-top:6px" onclick="delDoc('clients','${x.id}',loadCli)">Remover</button></div>`;
+          }).join("") : '<div class="card" style="text-align:center;color:var(--muted)">Nenhuma cliente cadastrada.</div>';
+        });
+      }
 
-        function loadSrv() {
+      function loadSrv() {
         db.collection("services").get().then(s => {
           srvs = []; s.forEach(d => srvs.push({ ...d.data(), id: d.id }));
           if (!srvs.length) srvs = [{ nome: "Box Braids", val: 180, dur: "4h" }, { nome: "Trança Nagô", val: 80, dur: "2h" }, { nome: "Entrelace", val: 200, dur: "3h" }, { nome: "Progressiva Orgânica", val: 220, dur: "3h" }, { nome: "Hidratação & Finalização", val: 70, dur: "1h30" }];
           $("ag-srv").innerHTML = srvs.map(x => `<option value="${x.nome}">${x.nome} (${brl(x.val)})</option>`).join("");
-          $("ag-val").value = srvs[0].val;
+          $("ag-val").value = srvs.val;
           $("srv-list").innerHTML = srvs.map(x => `<div class="card" style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><b>${x.nome}</b><div style="font-size:12px;color:var(--gold2)">${brl(x.val)} ${x.dur ? "• " + x.dur : ""}</div></div>${x.id ? `<button class="btn-sm del" onclick="delDoc('services','${x.id}',loadSrv)">Excluir</button>` : '<span class="pill">Padrão</span>'}</div>`).join("");
         });
       }
@@ -353,26 +447,3 @@
           let e = []; s.forEach(d => e.push({ ...d.data(), id: d.id }));
           const baixos = e.filter(x => x.qtd <= x.min).length;
           $("h-est").textContent = baixos + (baixos == 1 ? " item baixo" : " itens baixos");
-          $("est-list").innerHTML = e.length ? e.map(x => `<div class="card" style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><b>${x.nome}</b><div style="font-size:12px;color:${x.qtd <= x.min ? 'var(--red)' : 'var(--green)'}">Estoque: <b>${x.qtd}</b> (Mín: ${x.min})</div></div><div style="display:flex;gap:6px"><button class="btn-sm" onclick="mudarQtd('${x.id}',${x.qtd-1})">-1</button><button class="btn-sm ok" onclick="mudarQtd('${x.id}',${x.qtd+1})">+1</button><button class="btn-sm del" onclick="delDoc('inventory','${x.id}',loadEst)">X</button></div></div>`).join("") : '<div class="card" style="text-align:center;color:var(--muted)">Nenhum produto no estoque.</div>';
-        });
-      }
-
-      auth.getRedirectResult().catch(e => { $("sdk-status").textContent = "Aviso: " + e.message; });
-      $("btn-login").onclick = () => {
-        $("sdk-status").textContent = "Abrindo Google...";
-        auth.signInWithPopup(prov).catch(() => auth.signInWithRedirect(prov));
-      };
-      $("btn-logout").onclick = () => auth.signOut().then(() => location.reload());
-      auth.onAuthStateChanged(u => {
-        if (u && ["bezerramarcos931@gmail.com","samanthasuliwan@gmail.com"].includes(u.email.toLowerCase())) {
-          $("user-greeting").textContent = "Olá, " + u.displayName;
-          $("login-screen").classList.add("hidden");
-          $("app-shell").classList.remove("hidden");
-          loadSrv(); loadCli(); loadEst(); loadAg(); loadCx();
-        }
-      });
-    })();
-  </script>
-</body>
-</html>
-
