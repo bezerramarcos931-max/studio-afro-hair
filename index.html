@@ -96,8 +96,9 @@
           <div class="grid"><div><label>Tipo</label><select id="tx-tp"><option value="ENTRADA">Entrada (+)</option><option value="SAIDA">Saída / Despesa (-)</option></select></div><div><label>Forma</label><select id="tx-mt"><option value="Pix">Pix</option><option value="Dinheiro">Dinheiro</option><option value="Cartão Crédito">Cartão Crédito</option><option value="Cartão Débito">Cartão Débito</option></select></div></div>
           <label>Descrição</label><input type="text" id="tx-ds" placeholder="Ex: Venda pomada / Compra jumbo">
           <label>Valor (R$)</label><input type="number" id="tx-vl" step="0.01">
-          <div style="display:flex;gap:8px;margin-top:12px"><button id="btn-save-tx" class="btn-gold" style="flex:1">Salvar</button><button onclick="closeBox('f-tx')" class="btn-sm">Cancelar</button></div>
-    <main id="tab-clientes" class="hidden">
+    <div style="display:flex;gap:8px;margin-top:12px"><button id="btn-save-tx" class="btn-gold" style="flex:1">Salvar</button><button onclick="closeBox('f-tx')" class="btn-sm">Cancelar</button></div>
+
+          <main id="tab-clientes" class="hidden">
       <div class="subtabs">
         <button id="st-cli" class="active" onclick="subTab('cli')">💇🏾‍♀️ Clientes</button>
         <button id="st-srv" onclick="subTab('srv')">✨ Serviços</button>
