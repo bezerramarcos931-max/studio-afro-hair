@@ -336,4 +336,43 @@
           $("h-cli").textContent = c.length + " cadastradas";
           $("dl-cli").innerHTML = c.map(x => `<option value="${x.nome}">`).join("");
           $("cli-list").innerHTML = c.length ? c.map(x => `<div class="card" style="margin-bottom:8px"><div style="display:flex;justify-content:space-between"><b>${x.nome}</b>${x.tel ? `<a class="btn-sm" target="_blank" href="https://wa.me{x.tel}">WhatsApp</a>` : ""}</div><div style="font-size:12px;color:var(--muted);margin-top:4px">${x.nasc ? "🎂 " + x.nasc + " • " : ""}${x.obs || "Sem observações"}</div><button class="btn-sm del" style="margin-top:6px" onclick="delDoc('clients','${x.id}',loadCli)">Remover</button></div>`).join("") : '<div class="card" style="text-align:center;color:var(--muted)">Nenhuma cliente cadastrada.</div>';
+     });}
+
+        function loadSrv() {
+        db.collection("services").get().then(s => {
+          srvs = []; s.forEach(d => srvs.push({ ...d.data(), id: d.id }));
+          if (!srvs.length) srvs = [{ nome: "Box Braids", val: 180, dur: "4h" }, { nome: "Trança Nagô", val: 80, dur: "2h" }, { nome: "Entrelace", val: 200, dur: "3h" }, { nome: "Progressiva Orgânica", val: 220, dur: "3h" }, { nome: "Hidratação & Finalização", val: 70, dur: "1h30" }];
+          $("ag-srv").innerHTML = srvs.map(x => `<option value="${x.nome}">${x.nome} (${brl(x.val)})</option>`).join("");
+          $("ag-val").value = srvs[0].val;
+          $("srv-list").innerHTML = srvs.map(x => `<div class="card" style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><b>${x.nome}</b><div style="font-size:12px;color:var(--gold2)">${brl(x.val)} ${x.dur ? "• " + x.dur : ""}</div></div>${x.id ? `<button class="btn-sm del" onclick="delDoc('services','${x.id}',loadSrv)">Excluir</button>` : '<span class="pill">Padrão</span>'}</div>`).join("");
         });
+      }
+
+      function loadEst() {
+        db.collection("inventory").get().then(s => {
+          let e = []; s.forEach(d => e.push({ ...d.data(), id: d.id }));
+          const baixos = e.filter(x => x.qtd <= x.min).length;
+          $("h-est").textContent = baixos + (baixos == 1 ? " item baixo" : " itens baixos");
+          $("est-list").innerHTML = e.length ? e.map(x => `<div class="card" style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><b>${x.nome}</b><div style="font-size:12px;color:${x.qtd <= x.min ? 'var(--red)' : 'var(--green)'}">Estoque: <b>${x.qtd}</b> (Mín: ${x.min})</div></div><div style="display:flex;gap:6px"><button class="btn-sm" onclick="mudarQtd('${x.id}',${x.qtd-1})">-1</button><button class="btn-sm ok" onclick="mudarQtd('${x.id}',${x.qtd+1})">+1</button><button class="btn-sm del" onclick="delDoc('inventory','${x.id}',loadEst)">X</button></div></div>`).join("") : '<div class="card" style="text-align:center;color:var(--muted)">Nenhum produto no estoque.</div>';
+        });
+      }
+
+      auth.getRedirectResult().catch(e => { $("sdk-status").textContent = "Aviso: " + e.message; });
+      $("btn-login").onclick = () => {
+        $("sdk-status").textContent = "Abrindo Google...";
+        auth.signInWithPopup(prov).catch(() => auth.signInWithRedirect(prov));
+      };
+      $("btn-logout").onclick = () => auth.signOut().then(() => location.reload());
+      auth.onAuthStateChanged(u => {
+        if (u && ["bezerramarcos931@gmail.com","samanthasuliwan@gmail.com"].includes(u.email.toLowerCase())) {
+          $("user-greeting").textContent = "Olá, " + u.displayName;
+          $("login-screen").classList.add("hidden");
+          $("app-shell").classList.remove("hidden");
+          loadSrv(); loadCli(); loadEst(); loadAg(); loadCx();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
+
