@@ -1,0 +1,14 @@
+name: Publicar Studio Afro Hair
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting --project studio-afro-hair
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
