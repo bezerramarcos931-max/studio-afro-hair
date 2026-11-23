@@ -140,4 +140,200 @@
           <button onclick="$('f-tx').classList.add('hidden')" class="btn-sm">Cancelar</button>
         </div>
       </div>
-      <div class="grid3">
+            <div class="grid3">
+        <div class="card" style="padding:12px"><small style="color:var(--muted)">Entradas</small><div id="cx-in" style="font-weight:800;color:var(--green);margin-top:4px">R$ 0,00</div></div>
+        <div class="card" style="padding:12px"><small style="color:var(--muted)">Saídas</small><div id="cx-out" style="font-weight:800;color:var(--red);margin-top:4px">R$ 0,00</div></div>
+        <div class="card" style="padding:12px"><small style="color:var(--muted)">Saldo</small><div id="cx-bal" style="font-weight:800;color:var(--gold2);margin-top:4px">R$ 0,00</div></div>
+      </div>
+      <div class="card" id="cx-methods" style="font-size:12px;color:var(--muted)"></div>
+      <div class="card" style="display:flex;justify-content:space-between;align-items:center">
+        <b style="font-size:13px;color:var(--gold2)">Data:</b>
+        <input type="date" id="flt-cx" style="width:auto;margin:0">
+      </div>
+      <div id="tx-list"></div>
+    </main>
+
+    <main id="tab-clientes" class="hidden">
+      <div class="subtabs">
+        <button id="st-cli" class="active" onclick="subTab('cli')">💇🏾‍♀️ Clientes</button>
+        <button id="st-srv" onclick="subTab('srv')">✨ Serviços</button>
+      </div>
+      <div id="pane-cli">
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <b>Ficha de Clientes</b><button onclick="$('f-cli').classList.toggle('hidden')" class="btn-gold">+ Cliente</button>
+        </div>
+        <div id="f-cli" class="card hidden" style="margin-bottom:10px">
+          <label>Nome Completo</label><input type="text" id="c-nome">
+          <div class="grid">
+            <div><label>WhatsApp</label><input type="tel" id="c-tel" placeholder="87999990000"></div>
+            <div><label>Aniversário</label><input type="date" id="c-nasc"></div>
+          </div>
+          <label>Curvatura / Notas Capilares</label><input type="text" id="c-obs" placeholder="Ex: 4B/4C, couro cabeludo sensível...">
+          <button id="btn-save-cli" class="btn-gold" style="width:100%;margin-top:12px">Salvar Cliente</button>
+        </div>
+        <div id="cli-list"></div>
+      </div>
+      <div id="pane-srv" class="hidden">
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <b>Catálogo & Preços</b><button onclick="$('f-srv').classList.toggle('hidden')" class="btn-gold">+ Serviço</button>
+        </div>
+        <div id="f-srv" class="card hidden" style="margin-bottom:10px">
+          <label>Nome do Serviço</label><input type="text" id="s-nome" placeholder="Ex: Box Braids Média">
+          <div class="grid">
+            <div><label>Preço Base (R$)</label><input type="number" id="s-val" step="0.01"></div>
+            <div><label>Duração Estimada</label><input type="text" id="s-dur" placeholder="Ex: 4h"></div>
+          </div>
+          <button id="btn-save-srv" class="btn-gold" style="width:100%;margin-top:12px">Salvar Serviço</button>
+        </div>
+        <div id="srv-list"></div>
+      </div>
+    </main>
+
+    <main id="tab-estoque" class="hidden">
+      <div class="card" style="display:flex;justify-content:space-between;align-items:center">
+        <div><b>Estoque de Insumos</b><div style="font-size:11px;color:var(--muted)">Fibras, pomadas, óleos e materiais</div></div>
+        <button onclick="$('f-est').classList.toggle('hidden')" class="btn-gold">+ Produto</button>
+      </div>
+      <div id="f-est" class="card hidden">
+        <label>Produto</label><input type="text" id="e-nome" placeholder="Ex: Pomada Modeladora Extra Forte">
+        <div class="grid">
+          <div><label>Qtd Atual</label><input type="number" id="e-qtd" value="1"></div>
+          <div><label>Alerta Mínimo</label><input type="number" id="e-min" value="2"></div>
+        </div>
+        <button id="btn-save-est" class="btn-gold" style="width:100%;margin-top:12px">Salvar Produto</button>
+      </div>
+      <div id="est-list"></div>
+    </main>
+
+    <nav>
+      <button id="nav-home" class="active" onclick="switchTab('home')"><span style="font-size:18px">🏠</span><span>Início</span></button>
+      <button id="nav-agenda" onclick="switchTab('agenda')"><span style="font-size:18px">📅</span><span>Agenda</span></button>
+      <button id="nav-caixa" onclick="switchTab('caixa')"><span style="font-size:18px">💰</span><span>Caixa</span></button>
+      <button id="nav-clientes" onclick="switchTab('clientes')"><span style="font-size:18px">💇🏾‍♀️</span><span>Clientes</span></button>
+      <button id="nav-estoque" onclick="switchTab('estoque')"><span style="font-size:18px">📦</span><span>Estoque</span></button>
+    </nav>
+  </div>
+  <script>
+    (async () => {
+      const h = "https://www.gstatic." + "com/firebasejs/10.12.2/";
+      for (const f of ["firebase-app-compat.js", "firebase-auth-compat.js", "firebase-firestore-compat.js"]) {
+        await new Promise((ok, err) => { const s = document.createElement("script"); s.src = h + f; s.onload = ok; s.onerror = err; document.head.appendChild(s); });
+      }
+      const $ = id => document.getElementById(id);
+      const today = () => new Date().toLocaleDateString("sv-SE");
+      const brl = v => Number(v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+      let sess = null, srvs = [];
+
+      window.switchTab = t => {
+        ["home","agenda","caixa","clientes","estoque"].forEach(x => { $("tab-"+x).classList.add("hidden"); $("nav-"+x).classList.remove("active"); });
+        $("tab-"+t).classList.remove("hidden"); $("nav-"+t).classList.add("active");
+      };
+      window.subTab = s => {
+        ["cli","srv"].forEach(x => { $("pane-"+x).classList.add("hidden"); $("st-"+x).classList.remove("active"); });
+        $("pane-"+s).classList.remove("hidden"); $("st-"+s).classList.add("active");
+      };
+
+      firebase.initializeApp({
+        apiKey: "AIzaSyDf2WEzBmcp2DPiqE8LLB5V9XDUoXr1UlE",
+        authDomain: "studio-afro-" + "hair." + "firebaseapp" + ".com",
+        projectId: "studio-afro-hair"
+      });
+      const auth = firebase.auth(), db = firebase.firestore(), prov = new firebase.auth.GoogleAuthProvider();
+      prov.setCustomParameters({ prompt: "select_account" });
+
+      $("ag-date").value = $("flt-ag").value = $("flt-cx").value = today();
+      $("flt-ag").onchange = loadAg; $("flt-cx").onchange = loadCx;
+      $("ag-srv").onchange = () => { const s = srvs.find(x => x.nome == $("ag-srv").value); if (s) $("ag-val").value = s.val; };
+
+      $("btn-save-ag").onclick = () => {
+        if (!$("ag-cli").value) return alert("Informe a cliente");
+        db.collection("appointments").add({
+          date: $("ag-date").value, time: $("ag-time").value, client: $("ag-cli").value,
+          phone: $("ag-tel").value.replace(/\D/g,""), service: $("ag-srv").value,
+          price: Number($("ag-val").value || 0), obs: $("ag-obs").value, status: "Agendado"
+        }).then(() => { $("ag-cli").value = $("ag-tel").value = $("ag-obs").value = ""; $("f-ag").classList.add("hidden"); $("flt-ag").value = $("ag-date").value; loadAg(); });
+      };
+
+      window.concluir = (id, c, s, p, dt) => {
+        const m = prompt("Forma de pagamento (Pix, Dinheiro, Cartão Crédito, Cartão Débito):", "Pix");
+        if (!m) return;
+        db.collection("appointments").doc(id).update({ status: "Concluído" })
+          .then(() => p > 0 && db.collection("transactions").add({ date: dt, type: "ENTRADA", method: m, desc: c + " — " + s, amount: p }))
+          .then(() => { loadAg(); loadCx(); });
+      };
+
+      window.delDoc = (col, id, fn) => { if (confirm("Excluir este registro?")) db.collection(col).doc(id).delete().then(fn); };
+
+      $("btn-sess").onclick = () => {
+        const d = $("flt-cx").value;
+        if (!sess || sess.status == "FECHADO") {
+          const i = parseFloat((prompt("Valor inicial em caixa (R$):", "0") || "0").replace(",", ".")) || 0;
+          db.collection("cash_sessions").doc(d).set({ date: d, status: "ABERTO", initial: i }).then(loadCx);
+        } else if (confirm("Fechar o caixa de hoje?")) db.collection("cash_sessions").doc(d).update({ status: "FECHADO" }).then(loadCx);
+      };
+
+      $("btn-save-tx").onclick = () => {
+        if (!$("tx-ds").value || Number($("tx-vl").value) <= 0) return alert("Preencha descrição e valor");
+        db.collection("transactions").add({ date: $("flt-cx").value, type: $("tx-tp").value, method: $("tx-mt").value, desc: $("tx-ds").value, amount: Number($("tx-vl").value) })
+          .then(() => { $("tx-ds").value = $("tx-vl").value = ""; $("f-tx").classList.add("hidden"); loadCx(); });
+      };
+
+      $("btn-save-cli").onclick = () => {
+        if (!$("c-nome").value) return;
+        db.collection("clients").add({ nome: $("c-nome").value, tel: $("c-tel").value.replace(/\D/g,""), nasc: $("c-nasc").value, obs: $("c-obs").value })
+          .then(() => { $("c-nome").value = $("c-tel").value = $("c-obs").value = ""; $("f-cli").classList.add("hidden"); loadCli(); });
+      };
+
+      $("btn-save-srv").onclick = () => {
+        if (!$("s-nome").value) return;
+        db.collection("services").add({ nome: $("s-nome").value, val: Number($("s-val").value || 0), dur: $("s-dur").value })
+          .then(() => { $("s-nome").value = $("s-val").value = $("s-dur").value = ""; $("f-srv").classList.add("hidden"); loadSrv(); });
+      };
+
+      $("btn-save-est").onclick = () => {
+        if (!$("e-nome").value) return;
+        db.collection("inventory").add({ nome: $("e-nome").value, qtd: Number($("e-qtd").value || 0), min: Number($("e-min").value || 1) })
+          .then(() => { $("e-nome").value = ""; $("f-est").classList.add("hidden"); loadEst(); });
+      };
+
+      window.mudarQtd = (id, q) => db.collection("inventory").doc(id).update({ qtd: Math.max(0, q) }).then(loadEst);
+
+      function loadAg() {
+        const d = $("flt-ag").value;
+        db.collection("appointments").where("date", "==", d).get().then(s => {
+          let a = []; s.forEach(x => a.push({ ...x.data(), id: x.id }));
+          a.sort((x, y) => (x.time || "").localeCompare(y.time || ""));
+          $("ag-list").innerHTML = a.length ? a.map(x => `<div class="card" style="margin-bottom:8px"><div style="display:flex;justify-content:space-between"><b>${x.time} — ${x.client}</b><span class="pill">${x.status}</span></div><div style="font-size:12px;color:var(--muted);margin:4px 0">${x.service} • <b style="color:var(--gold2)">${brl(x.price)}</b> ${x.obs ? "• " + x.obs : ""}</div><div style="display:flex;gap:6px;margin-top:8px">${x.phone ? `<a class="btn-sm" target="_blank" href="https://wa.me{x.phone}?text=Ol%C3%A1%20${encodeURIComponent(x.client)},%20confirmando%20seu%20hor%C3%A1rio%20no%20Studio%20Afro%20Hair%20%C3%A0s%20${x.time}!">WhatsApp</a>` : ""}${x.status != "Concluído" ? `<button class="btn-sm ok" onclick="concluir('${x.id}','${x.client}','${x.service}',${x.price},'${x.date}')">Concluir & Receber</button>` : ""}<button class="btn-sm del" onclick="delDoc('appointments','${x.id}',loadAg)">Excluir</button></div></div>`).join("") : '<div class="card" style="text-align:center;color:var(--muted)">Nenhum horário nesta data.</div>';
+          if (d == today()) {
+            $("h-ag").textContent = a.length + " clientes";
+            $("h-prev").textContent = "Previsto: " + brl(a.reduce((k, x) => k + Number(x.price || 0), 0));
+            $("h-next").innerHTML = a.length ? a.slice(0, 4).map(x => `<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(212,163,56,.12)"><span><b style="color:var(--gold2)">${x.time}</b> ${x.client} (${x.service})</span><b>${brl(x.price)}</b></div>`).join("") : "Nenhum horário hoje.";
+          }
+        });
+      }
+
+      function loadCx() {
+        const d = $("flt-cx").value;
+        db.collection("cash_sessions").doc(d).get().then(sd => {
+          sess = sd.exists ? sd.data() : null;
+          $("cx-st").textContent = !sess ? "Não aberto" : `● ${sess.status} (Inicial: ${brl(sess.initial)})`;
+          $("btn-sess").textContent = sess && sess.status == "ABERTO" ? "Fechar Caixa" : "Abrir Caixa";
+          return db.collection("transactions").where("date", "==", d).get();
+        }).then(s => {
+          let ent = 0, sai = 0, ini = sess ? Number(sess.initial || 0) : 0, tx = [], pm = {};
+          s.forEach(doc => { const x = { ...doc.data(), id: doc.id }; tx.push(x); if (x.type == "ENTRADA") { ent += x.amount; pm[x.method] = (pm[x.method] || 0) + x.amount; } else sai += x.amount; });
+          const bal = ini + ent - sai;
+          $("cx-in").textContent = brl(ent); $("cx-out").textContent = brl(sai); $("cx-bal").textContent = brl(bal);
+          $("cx-methods").innerHTML = Object.keys(pm).length ? "<b>Entradas por forma:</b> " + Object.entries(pm).map(([k, v]) => `${k}: <b style="color:#fff">${brl(v)}</b>`).join(" • ") : "Sem entradas registradas nesta data.";
+          if (d == today()) { $("h-cash").textContent = brl(bal); $("h-cash-st").textContent = sess ? "Caixa " + sess.status : "Abrir Caixa"; }
+          $("tx-list").innerHTML = tx.length ? tx.map(x => `<div class="card" style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><b>${x.desc}</b><div style="font-size:11px;color:var(--muted)">${x.method}</div></div><div style="text-align:right"><b style="color:${x.type == 'ENTRADA' ? 'var(--green)' : 'var(--red)'}">${x.type == 'ENTRADA' ? '+ ' : '- '}${brl(x.amount)}</b><br><button class="btn-sm del" style="margin-top:4px" onclick="delDoc('transactions','${x.id}',loadCx)">Excluir</button></div></div>`).join("") : '<div class="card" style="text-align:center;color:var(--muted)">Sem lançamentos nesta data.</div>';
+        });
+      }
+
+      function loadCli() {
+        db.collection("clients").get().then(s => {
+          let c = []; s.forEach(d => c.push({ ...d.data(), id: d.id }));
+          $("h-cli").textContent = c.length + " cadastradas";
+          $("dl-cli").innerHTML = c.map(x => `<option value="${x.nome}">`).join("");
+          $("cli-list").innerHTML = c.length ? c.map(x => `<div class="card" style="margin-bottom:8px"><div style="display:flex;justify-content:space-between"><b>${x.nome}</b>${x.tel ? `<a class="btn-sm" target="_blank" href="https://wa.me{x.tel}">WhatsApp</a>` : ""}</div><div style="font-size:12px;color:var(--muted);margin-top:4px">${x.nasc ? "🎂 " + x.nasc + " • " : ""}${x.obs || "Sem observações"}</div><button class="btn-sm del" style="margin-top:6px" onclick="delDoc('clients','${x.id}',loadCli)">Remover</button></div>`).join("") : '<div class="card" style="text-align:center;color:var(--muted)">Nenhuma cliente cadastrada.</div>';
+        });
