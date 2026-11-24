@@ -2,39 +2,249 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Studio Afro Hair — Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Studio Afro Hair | Samantha Suliwan</title>
+  <script src="https://tailwindcss.com"></script>
+  <link href="https://googleapis.com" rel="stylesheet">
   <style>
-    body { background:#132114; color:#f5f5f0; font-family:sans-serif; display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0; text-align:center; }
-    .box { background:#1b2e1c; border:1px solid #d4a338; border-radius:24px; padding:32px 24px; max-width:360px; width:90%; }
-    button { width:100%; padding:14px; border-radius:12px; border:none; background:#d4a338; color:#132114; font-weight:800; font-size:15px; cursor:pointer; margin-top:16px; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0d1b15; color: #f4f1ea; }
+    .font-brand { font-family: 'Cinzel', serif; }
+    .gold-text { color: #d4af37; }
+    .gold-bg { background-color: #d4af37; color: #0d1b15; }
+    .gold-border { border-color: rgba(212, 175, 55, 0.35); }
+    .card-dark { background-color: #14281f; border: 1px solid rgba(212, 175, 55, 0.25); }
   </style>
 </head>
-<body>
-  <div class="box">
-    <h2 style="color:#d4a338;margin:0">STUDIO AFRO HAIR</h2>
-    <p id="st" style="font-size:13px;margin-top:12px">Pronto para conectar</p>
-    <button id="btn">Entrar com Google</button>
+<body class="min-h-screen flex flex-col">
+
+  <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
+    <div class="card-dark w-full max-w-md rounded-3xl p-8 text-center shadow-2xl">
+      <p class="text-xs tracking-[0.25em] uppercase gold-text font-semibold mb-1">Samantha Suliwan</p>
+      <h1 class="font-brand text-3xl font-bold text-white tracking-wide mb-2">STUDIO AFRO HAIR</h1>
+      <p class="text-sm text-gray-300 italic mb-8">A beleza que conduz</p>
+      <button id="btn-google-login" onclick="loginWithGoogle()" class="w-full bg-white hover:bg-gray-100 text-gray-900 font-semibold py-3.5 px-6 rounded-xl flex items-center justify-center gap-3 shadow-lg transition active:scale-95">
+        <img src="https://gstatic.com" alt="Google" class="w-5 h-5" />
+        <span>Entrar com Google</span>
+      </button>
+      <p id="login-status" class="mt-4 text-xs gold-text">Pronto para entrar</p>
+      <p id="login-error" class="mt-2 text-xs text-red-400 hidden"></p>
+    </div>
   </div>
-  <script src="https://gstatic.com"></script>
-  <script src="https://gstatic.com"></script>
-  <script>
-    firebase.initializeApp({
-      apiKey: "AIzaSyDf2WEzBmcp2DPiqE8LLB5V9XDUoXr1UlE",
+
+  <div id="app-screen" class="hidden flex-1 flex flex-col max-w-4xl w-full mx-auto pb-24">
+    <header class="p-4 flex items-center justify-between border-b gold-border bg-[#0a1510] sticky top-0 z-10">
+      <div>
+        <p class="text-[10px] tracking-[0.2em] uppercase gold-text">Samantha Suliwan</p>
+        <h2 class="font-brand text-lg font-bold text-white">STUDIO AFRO HAIR</h2>
+      </div>
+      <div class="flex items-center gap-3">
+        <span id="user-name" class="text-xs text-gray-300 hidden sm:inline"></span>
+        <button onclick="logout()" class="text-xs border gold-border px-3 py-1.5 rounded-lg gold-text">Sair</button>
+      </div>
+    </header>
+
+    <main class="p-4 flex-1 space-y-6">
+      <section id="tab-dashboard" class="space-y-4">
+        <h3 class="text-lg font-semibold gold-text">Resumo do Salão</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div class="card-dark p-4 rounded-2xl"><p class="text-xs text-gray-400">Agendamentos</p><p id="stat-appts" class="text-2xl font-bold text-white mt-1">0</p></div>
+          <div class="card-dark p-4 rounded-2xl"><p class="text-xs text-gray-400">Clientes</p><p id="stat-clients" class="text-2xl font-bold text-white mt-1">0</p></div>
+          <div class="card-dark p-4 rounded-2xl col-span-2 sm:col-span-1"><p class="text-xs text-gray-400">Saldo em Caixa</p><p id="stat-cash" class="text-2xl font-bold gold-text mt-1">R$ 0,00</p></div>
+        </div>
+        <div class="card-dark p-4 rounded-2xl">
+          <h4 class="text-sm font-semibold text-white mb-3">Próximos Atendimentos</h4>
+          <div id="dashboard-appts-list" class="space-y-2 text-sm text-gray-300"><p class="text-xs text-gray-400">Nenhum agendamento cadastrado ainda.</p></div>
+        </div>
+      </section>
+
+      <section id="tab-agenda" class="hidden space-y-4">
+        <h3 class="text-lg font-semibold gold-text">Nova Reserva na Agenda</h3>
+        <form onsubmit="addAppointment(event)" class="card-dark p-4 rounded-2xl space-y-3">
+          <input id="appt-client" type="text" placeholder="Nome da cliente" required class="w-full bg-[#0d1b15] border gold-border rounded-xl p-3 text-sm text-white" />
+          <input id="appt-service" type="text" placeholder="Serviço (ex: Trança Nagô, Hidratação)" required class="w-full bg-[#0d1b15] border gold-border rounded-xl p-3 text-sm text-white" />
+          <div class="grid grid-cols-2 gap-3">
+            <input id="appt-date" type="date" required class="w-full bg-[#0d1b15] border gold-border rounded-xl p-3 text-sm text-white" />
+            <input id="appt-time" type="time" required class="w-full bg-[#0d1b15] border gold-border rounded-xl p-3 text-sm text-white" />
+          </div>
+          <input id="appt-price" type="number" step="0.01" placeholder="Valor (R$)" required class="w-full bg-[#0d1b15] border gold-border rounded-xl p-3 text-sm text-white" />
+          <button type="submit" class="w-full gold-bg font-bold py-3 rounded-xl text-sm">Salvar Agendamento</button>
+        </form>
+        <div id="agenda-list" class="space-y-2"></div>
+      </section>
+
+      <section id="tab-clientes" class="hidden space-y-4">
+        <h3 class="text-lg font-semibold gold-text">Cadastrar Cliente</h3>
+        <form onsubmit="addClient(event)" class="card-dark p-4 rounded-2xl space-y-3">
+          <input id="client-name" type="text" placeholder="Nome completo" required class="w-full bg-[#0d1b15] border gold-border rounded-xl p-3 text-sm text-white" />
+          <input id="client-phone" type="tel" placeholder="WhatsApp / Telefone" required class="w-full bg-[#0d1b15] border gold-border rounded-xl p-3 text-sm text-white" />
+          <input id="client-notes" type="text" placeholder="Tipo de cabelo / Observações" class="w-full bg-[#0d1b15] border gold-border rounded-xl p-3 text-sm text-white" />
+          <button type="submit" class="w-full gold-bg font-bold py-3 rounded-xl text-sm">Salvar Cliente</button>
+        </form>
+        <div id="clients-list" class="space-y-2"></div>
+      </section>
+
+      <section id="tab-caixa" class="hidden space-y-4">
+        <h3 class="text-lg font-semibold gold-text">Movimentação de Caixa</h3>
+        <form onsubmit="addCash(event)" class="card-dark p-4 rounded-2xl space-y-3">
+          <select id="cash-type" class="w-full bg-[#0d1b15] border gold-border rounded-xl p-3 text-sm text-white">
+            <option value="entrada">Entrada (+)</option>
+            <option value="saida">Saída / Despesa (-)</option>
+          </select>
+          <input id="cash-desc" type="text" placeholder="Descrição (ex: Pagamento Trança, Compra Gel)" required class="w-full bg-[#0d1b15] border gold-border rounded-xl p-3 text-sm text-white" />
+          <input id="cash-amount" type="number" step="0.01" placeholder="Valor (R$)" required class="w-full bg-[#0d1b15] border gold-border rounded-xl p-3 text-sm text-white" />
+          <button type="submit" class="w-full gold-bg font-bold py-3 rounded-xl text-sm">Registrar no Caixa</button>
+        </form>
+        <div id="cash-list" class="space-y-2"></div>
+      </section>
+    </main>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-[#0a1510] border-t gold-border flex justify-around py-2.5 z-20">
+      <button onclick="switchTab('dashboard')" class="nav-btn text-xs flex flex-col items-center gold-text font-semibold" data-tab="dashboard">📊<span>Painel</span></button>
+      <button onclick="switchTab('agenda')" class="nav-btn text-xs flex flex-col items-center text-gray-400" data-tab="agenda">📅<span>Agenda</span></button>
+      <button onclick="switchTab('clientes')" class="nav-btn text-xs flex flex-col items-center text-gray-400" data-tab="clientes">👩🏾<span>Clientes</span></button>
+      <button onclick="switchTab('caixa')" class="nav-btn text-xs flex flex-col items-center text-gray-400" data-tab="caixa">💰<span>Caixa</span></button>
+    </nav>
+  </div>
+
+    <script type="module">
+    import { initializeApp } from "https://gstatic.com";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://gstatic.com";
+    import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, orderBy } from "https://gstatic.com";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDYZNLZmeop2DPiqE8LLB1vVXDUoXrIuLE",
       authDomain: "://firebaseapp.com",
-      projectId: "studio-afro-hair"
-    });
-    const auth = firebase.auth();
-    const prov = new firebase.auth.GoogleAuthProvider();
-    document.getElementById("btn").onclick = () => {
-      document.getElementById("st").textContent = "Abrindo Google...";
-      auth.signInWithPopup(prov).catch(e => {
-        document.getElementById("st").textContent = "Erro: " + e.code + " - " + e.message;
+      projectId: "studio-afro-hair",
+      storageBucket: "studio-afro-hair.firebasestorage.app",
+      messagingSenderId: "747537639779",
+      appId: "1:747537639779:web:b6c98b321e6a004e084b66",
+      measurementId: "G-N6Q8BXFMCJ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+
+    window.loginWithGoogle = async () => {
+      const statusEl = document.getElementById('login-status');
+      const errorEl = document.getElementById('login-error');
+      statusEl.textContent = "Conectando com Google...";
+      errorEl.classList.add('hidden');
+      try {
+        await signInWithPopup(auth, provider);
+      } catch (err) {
+        statusEl.textContent = "Falha ao entrar";
+        errorEl.textContent = "Erro: " + err.message;
+        errorEl.classList.remove('hidden');
+      }
+    };
+
+    window.logout = () => signOut(auth);
+
+    window.switchTab = (tabName) => {
+      ['dashboard', 'agenda', 'clientes', 'caixa'].forEach(t => {
+        document.getElementById('tab-' + t).classList.toggle('hidden', t !== tabName);
+      });
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        const active = btn.dataset.tab === tabName;
+        btn.classList.toggle('gold-text', active);
+        btn.classList.toggle('font-semibold', active);
+        btn.classList.toggle('text-gray-400', !active);
       });
     };
-    auth.onAuthStateChanged(u => {
-      if (u) document.getElementById("st").textContent = "CONECTADO COM SUCESSO: " + u.email;
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('app-screen').classList.remove('hidden');
+        document.getElementById('user-name').textContent = user.displayName || user.email;
+        loadRealtimeData();
+      } else {
+        document.getElementById('login-screen').classList.remove('hidden');
+        document.getElementById('app-screen').classList.add('hidden');
+        document.getElementById('login-status').textContent = "Pronto para entrar";
+      }
     });
+
+    window.addAppointment = async (e) => {
+      e.preventDefault();
+      await addDoc(collection(db, "appointments"), {
+        client: document.getElementById('appt-client').value,
+        service: document.getElementById('appt-service').value,
+        date: document.getElementById('appt-date').value,
+        time: document.getElementById('appt-time').value,
+        price: parseFloat(document.getElementById('appt-price').value),
+        createdAt: Date.now()
+      });
+      e.target.reset();
+    };
+
+    window.addClient = async (e) => {
+      e.preventDefault();
+      await addDoc(collection(db, "clients"), {
+        name: document.getElementById('client-name').value,
+        phone: document.getElementById('client-phone').value,
+        notes: document.getElementById('client-notes').value,
+        createdAt: Date.now()
+      });
+      e.target.reset();
+    };
+
+    window.addCash = async (e) => {
+      e.preventDefault();
+      await addDoc(collection(db, "cash"), {
+        type: document.getElementById('cash-type').value,
+        desc: document.getElementById('cash-desc').value,
+        amount: parseFloat(document.getElementById('cash-amount').value),
+        createdAt: Date.now()
+      });
+      e.target.reset();
+    };
+
+    window.removeItem = async (col, id) => {
+      if (confirm("Deseja apagar este registro?")) {
+        await deleteDoc(doc(db, col, id));
+      }
+    };
+
+    function loadRealtimeData() {
+      onSnapshot(query(collection(db, "appointments"), orderBy("createdAt", "desc")), (snap) => {
+        document.getElementById('stat-appts').textContent = snap.size;
+        const list = document.getElementById('agenda-list');
+        const dashList = document.getElementById('dashboard-appts-list');
+        list.innerHTML = "";
+        dashList.innerHTML = snap.empty ? '<p class="text-xs text-gray-400">Nenhum agendamento cadastrado ainda.</p>' : "";
+        snap.forEach((d) => {
+          const item = d.data();
+          const html = `<div class="card-dark p-3 rounded-xl flex justify-between items-center"><div><p class="font-semibold text-white text-sm">${item.client} <span class="gold-text text-xs">(${item.service})</span></p><p class="text-xs text-gray-400">${item.date} às ${item.time} • R$ ${Number(item.price).toFixed(2)}</p></div><button onclick="removeItem('appointments', '${d.id}')" class="text-xs text-red-400 px-2">Excluir</button></div>`;
+          list.innerHTML += html;
+          dashList.innerHTML += html;
+        });
+      });
+
+      onSnapshot(query(collection(db, "clients"), orderBy("createdAt", "desc")), (snap) => {
+        document.getElementById('stat-clients').textContent = snap.size;
+        const list = document.getElementById('clients-list');
+        list.innerHTML = "";
+        snap.forEach((d) => {
+          const item = d.data();
+          list.innerHTML += `<div class="card-dark p-3 rounded-xl flex justify-between items-center"><div><p class="font-semibold text-white text-sm">${item.name}</p><p class="text-xs text-gray-400">${item.phone} ${item.notes ? '• ' + item.notes : ''}</p></div><button onclick="removeItem('clients', '${d.id}')" class="text-xs text-red-400 px-2">Excluir</button></div>`;
+        });
+      });
+
+      onSnapshot(query(collection(db, "cash"), orderBy("createdAt", "desc")), (snap) => {
+        let total = 0;
+        const list = document.getElementById('cash-list');
+        list.innerHTML = "";
+        snap.forEach((d) => {
+          const item = d.data();
+          total += item.type === 'entrada' ? Number(item.amount) : -Number(item.amount);
+          list.innerHTML += `<div class="card-dark p-3 rounded-xl flex justify-between items-center"><div><p class="font-semibold text-white text-sm">${item.desc}</p><p class="text-xs ${item.type === 'entrada' ? 'text-green-400' : 'text-red-400'}">${item.type === 'entrada' ? '+' : '-'} R$ ${Number(item.amount).toFixed(2)}</p></div><button onclick="removeItem('cash', '${d.id}')" class="text-xs text-red-400 px-2">Excluir</button></div>`;
+        });
+        document.getElementById('stat-cash').textContent = "R$ " + total.toFixed(2);
+      });
+    }
   </script>
 </body>
 </html>
